@@ -6,19 +6,22 @@ Small, from-scratch reproductions of neural network papers and mechanisms — no
 
 ### [`hopfield-1982/`](./hopfield-1982)
 
-Reproduces the storage-capacity experiment (Fig. 2) from Hopfield's 1982 PNAS paper *"Neural networks and physical systems with emergent collective computational abilities"*.
+Reproduces the computational studies from Hopfield's 1982 PNAS paper *"Neural networks and physical systems with emergent collective computational abilities"*.
 
-- Hebbian storage: `T_ij = sum_s mu_i^s * mu_j^s`, `T_ii = 0`
-- Asynchronous update dynamics until convergence
-- Measures recall error (Hamming distance) vs. number of stored memories `n`, compared against the paper's analytical error probability (Eq. 10)
+- 9 explicitly reported simulation experiments, in paper order
+- 3 executable mechanism extensions clearly separated from the reported experiments
+- Reusable `a/b/c/d/e/f` components for memories, weights, initial states, dynamics, measurements, and plots
+- Lightweight runs by default: trajectories and energy histories are recorded only when requested
 
 Run the structured, annotated notebook in Colab:
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/hopfield-1982/hopfield_1982_capacity.ipynb)
 
-The notebook is the executable source of truth and follows a reusable experiment template: paper question, mathematical expectation, configuration, minimal implementation, mechanism checks, experiment run, visualization, comparison with the paper, result storage, and self-check questions. Choose **Runtime → Run all** in Colab; no local Python environment is required.
+The notebook is self-contained: shared components live in its first collapsible section and every paper experiment is a short, visible composition such as `a1 → b1 → c3 → d1 → e1 → f1`. Each section includes the original paper location, experiment question, component recipe, result, and comparison with the paper.
 
-Result (N=100, averaged over 100 trials per `n`):
+Choose **Runtime → Restart session and run all** in Colab. No local Python environment or companion `.py` module is required.
+
+The original capacity result remains as a quick preview:
 
 ![capacity curve](./hopfield-1982/capacity_curve.png)
 
