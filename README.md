@@ -12,7 +12,13 @@ Reproduces the storage-capacity experiment (Fig. 2) from Hopfield's 1982 PNAS pa
 - Asynchronous update dynamics until convergence
 - Measures recall error (Hamming distance) vs. number of stored memories `n`, compared against the paper's analytical error probability (Eq. 10)
 
-Run it:
+Run the structured, annotated notebook in Colab:
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/hopfield-1982/hopfield_1982_capacity.ipynb)
+
+The notebook follows a reusable experiment template: paper question, mathematical expectation, configuration, minimal implementation, mechanism checks, experiment run, visualization, comparison with the paper, result storage, and self-check questions.
+
+Or run the original script locally:
 
 ```bash
 cd hopfield-1982
