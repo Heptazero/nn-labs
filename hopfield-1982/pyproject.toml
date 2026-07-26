@@ -1,8 +1,0 @@
-[project]
-name = "1982-neural-networks-and-physical-systems"
-version = "0.1.0"
-requires-python = ">=3.13"
-dependencies = [
-    "matplotlib>=3.11.0",
-    "numpy>=2.5.0",
-]

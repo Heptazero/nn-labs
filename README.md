@@ -16,14 +16,7 @@ Run the structured, annotated notebook in Colab:
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/hopfield-1982/hopfield_1982_capacity.ipynb)
 
-The notebook follows a reusable experiment template: paper question, mathematical expectation, configuration, minimal implementation, mechanism checks, experiment run, visualization, comparison with the paper, result storage, and self-check questions.
-
-Or run the original script locally:
-
-```bash
-cd hopfield-1982
-uv run capacity_experiment.py
-```
+The notebook is the executable source of truth and follows a reusable experiment template: paper question, mathematical expectation, configuration, minimal implementation, mechanism checks, experiment run, visualization, comparison with the paper, result storage, and self-check questions. Choose **Runtime → Run all** in Colab; no local Python environment is required.
 
 Result (N=100, averaged over 100 trials per `n`):
 
