@@ -9,12 +9,14 @@ The model is:
 MNIST image -> CNN feature extractor -> HopfieldPooling -> sigmoid classifier
 ```
 
-Each sample is a bag of ten MNIST images. A positive bag contains at least one
-target digit (9 by default); a negative bag contains no target digit.
+Each sample is a bag of MNIST images with a variable length sampled around ten
+instances. A positive bag contains at least one target digit (9 by default); a
+negative bag contains no target digit.
 
-The notebook keeps the central HopfieldPooling experiment but generates the
-bags locally. It therefore does not need the separate `AttentionDeepMIL`
-repository used by the original historical notebook in `ml-jku/hopfield-layers`.
+The notebook keeps the central HopfieldPooling experiment and its historical
+training scale and hyperparameters, but generates the bags locally. It
+therefore does not need the separate `AttentionDeepMIL` repository used by the
+original historical notebook in `ml-jku/hopfield-layers`.
 
 Open the notebook in Colab:
 
