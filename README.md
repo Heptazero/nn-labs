@@ -27,8 +27,10 @@ The original capacity result remains as a quick preview:
 
 ### [`hopfield is all you need/`](./hopfield%20is%20all%20you%20need/)
 
-A self-contained Colab experiment based on the MNIST-bags example from
-*Hopfield Networks is All You Need*. The notebook uses the pipeline
+A Colab-ready experiment based on the MNIST-bags example from
+*Hopfield Networks is All You Need*. It retains the official experiment while
+using a current PyTorch implementation of the variable-length bag loader. The
+notebook uses the pipeline
 `CNN -> HopfieldPooling -> sigmoid` to classify a bag according to whether it
 contains a target digit.
 
