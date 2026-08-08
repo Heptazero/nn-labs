@@ -26,3 +26,19 @@ The original capacity result remains as a quick preview:
 ![capacity curve](./hopfield-1982/capacity_curve.png)
 
 Recall degrades sharply around `n ≈ 15` (i.e. `n ≈ 0.15N`), consistent with the paper's reported capacity of `~0.15N` (later refined to the precise `~0.138N` by Amit, Gutfreund & Sompolinsky, 1985, via the replica method).
+
+### [`lap_associative_memory/`](./lap_associative_memory)
+
+Tests whether Locality–Autonomy Principle (LAP) regularization reduces
+non-descendant intervention leakage in a causal energy-based associative memory,
+and measures its cost in storage capacity and basin width. The experiment includes
+chain and confounded-fork SCM generators, a Modern Hopfield baseline, a node-wise
+E-SCM, mixed-Hessian LAP regularization, hard interventions, CSV checkpoints, and
+the four requested plots.
+
+Run the quick smoke grid or the multi-seed research grid in Colab:
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Heptazero/nn-labs/blob/agent/add-lap-associative-memory-colab/notebooks/lap_associative_memory_colab.ipynb)
+
+The notebook runs entirely in Colab. Its quick configuration verifies the full
+pipeline; switch `FULL_EXPERIMENT` to `True` for the larger scan.

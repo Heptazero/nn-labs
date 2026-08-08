@@ -1,0 +1,110 @@
+"""Generate the Colab entry notebook without storing transient outputs."""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+
+def markdown(source: str) -> dict:
+    return {"cell_type": "markdown", "metadata": {}, "source": source.splitlines(keepends=True)}
+
+
+def code(source: str) -> dict:
+    return {
+        "cell_type": "code",
+        "execution_count": None,
+        "metadata": {},
+        "outputs": [],
+        "source": source.splitlines(keepends=True),
+    }
+
+
+cells = [
+    markdown(
+        "# LAP × 联想记忆：容量与干预鲁棒性\n\n"
+        "这个 notebook 会完成链式 SCM 与混杂 fork 的数据生成、Modern Hopfield 对照、"
+        "LAP-regularized E-SCM 训练、do-intervention、容量/吸引域评估和四张图。\n\n"
+        "> 默认配置是端到端烟雾实验。确认它能完整跑完后，再打开完整扫描。"
+    ),
+    markdown("## 1. 获取代码与依赖"),
+    code(
+        "import os, subprocess\n"
+        "REPO_URL = \"https://github.com/Heptazero/nn-labs.git\"\n"
+        "REVISION = \"agent/add-lap-associative-memory-colab\"\n"
+        "REPO_DIR = \"/content/nn-labs\"\n"
+        "if not os.path.exists(REPO_DIR):\n"
+        "    subprocess.run([\"git\", \"clone\", \"--branch\", REVISION, \"--depth\", \"1\", REPO_URL, REPO_DIR], check=True)\n"
+        "os.chdir(REPO_DIR)\n"
+        "print(\"Repository ready:\", os.getcwd())"
+    ),
+    markdown(
+        "## 2. 选择实验规模\n\n"
+        "`False` 通常几分钟内完成，用于检查实现；`True` 是多 seed 扫描，二阶导开销明显更高。"
+    ),
+    code(
+        "from pathlib import Path\n"
+        "import torch\n"
+        "from lap_associative_memory import ExperimentConfig, plot_results, run_grid\n\n"
+        "FULL_EXPERIMENT = False\n"
+        "config = ExperimentConfig.full() if FULL_EXPERIMENT else ExperimentConfig()\n"
+        "OUTPUT_DIR = Path(\"/content/lap_results/full\" if FULL_EXPERIMENT else \"/content/lap_results/quick\")\n"
+        "device = \"cuda\" if torch.cuda.is_available() else \"cpu\"\n"
+        "print(config)\n"
+        "print(\"device =\", device, \"| output =\", OUTPUT_DIR)"
+    ),
+    markdown(
+        "如果要防止 Colab 断连丢失结果，可先挂载 Drive，然后把 `OUTPUT_DIR` 改成"
+        " `/content/drive/MyDrive/lap_results/...`。"
+    ),
+    code(
+        "# 可选：保存到 Google Drive\n"
+        "# from google.colab import drive\n"
+        "# drive.mount('/content/drive')\n"
+        "# OUTPUT_DIR = Path('/content/drive/MyDrive/lap_results/full')"
+    ),
+    markdown("## 3. 训练、评估与 checkpoint"),
+    code(
+        "metrics, history = run_grid(config, OUTPUT_DIR, device=device)\n"
+        "figure_paths = plot_results(metrics, history, OUTPUT_DIR)\n"
+        "print(f\"完成：{len(metrics)} 条指标，{len(history)} 条训练记录\")\n"
+        "display(metrics.head(12))"
+    ),
+    markdown("## 4. 核心汇总"),
+    code(
+        "summary = (metrics\n"
+        "           .groupby(['model', 'lambda_lap', 'evaluation', 'metric'], dropna=False)['value']\n"
+        "           .agg(['mean', 'std', 'count'])\n"
+        "           .reset_index())\n"
+        "display(summary)"
+    ),
+    markdown("## 5. 四张实验图"),
+    code(
+        "from IPython.display import Image, display\n"
+        "for path in figure_paths:\n"
+        "    print(path.name)\n"
+        "    display(Image(filename=str(path)))"
+    ),
+    markdown(
+        "## 读图边界\n\n"
+        "先确认图 4 中 λ>0 的 LAP penalty 确实下降，再解释泄漏或容量差异。"
+        "烟雾配置只验证流水线，不能作为论文结论；正式结果至少使用完整配置、置信区间，"
+        "并检查不同检索步数下结论是否稳定。"
+    ),
+]
+
+notebook = {
+    "cells": cells,
+    "metadata": {
+        "accelerator": "GPU",
+        "colab": {"name": "lap_associative_memory_colab.ipynb", "provenance": []},
+        "kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},
+        "language_info": {"name": "python", "version": "3.x"},
+    },
+    "nbformat": 4,
+    "nbformat_minor": 5,
+}
+
+target = Path(__file__).parents[1] / "notebooks" / "lap_associative_memory_colab.ipynb"
+target.write_text(json.dumps(notebook, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+print(target)
