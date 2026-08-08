@@ -1,6 +1,6 @@
 # LAP × 联想记忆：容量与干预鲁棒性实验
 
-[![在 Colab 中打开](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Heptazero/nn-labs/blob/agent/add-lap-associative-memory-colab/notebooks/lap_associative_memory_colab.ipynb)
+[![在 Colab 中打开](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/lap_associative_memory/lap_associative_memory_colab.ipynb)
 
 这个仓库实现了一个可复现实验：在 Dense Associative Memory / Modern Hopfield 对照下，测量 Locality–Autonomy Principle（LAP）正则化强度与干预泄漏、95% 存储容量、吸引域宽度之间的权衡。
 
@@ -30,23 +30,25 @@ E_i(z) = E_i^legal(z_i, z_PA(i)) + α E_i^residual(z_all)
 ## 本地运行
 
 ```bash
-python -m pip install -r ../requirements.txt
-python ../run_experiment.py --quick --output ../results/quick
+python -m pip install -r lap_associative_memory/requirements.txt
+python -m lap_associative_memory.run_experiment --quick --output results/quick
 pytest
 ```
 
 完整扫描：
 
 ```bash
-python ../run_experiment.py --full --output ../results/full
+python -m lap_associative_memory.run_experiment --full --output results/full
 ```
 
 完整配置为 `d=10`、`N∈{5,10,20,50,100}`、`λ∈{0,0.01,0.1,1,10}`、3 个 seed。二阶导训练开销较高，CSV 会在每个 `(seed,N,λ)` 完成后 checkpoint。
 
 ## 代码位置
 
+- `lap_associative_memory_colab.ipynb`：Colab 入口；
 - `experiment.py`：SCM、Modern Hopfield、E-SCM、LAP、三步干预、指标、扫描和绘图；
-- `../notebooks/lap_associative_memory_colab.ipynb`：Colab 入口；
-- `tests/`：数据、二阶导和 clamp 的最小自动测试。
+- `run_experiment.py`：命令行入口；
+- `tests/`：数据、二阶导和 clamp 的最小自动测试；
+- `tools/build_notebook.py`：无输出地重建 notebook。
 
 > 当前实现是验证理论方向的研究原型，而不是预注册实验。正式报告结果前，应增加 seed 数、记录置信区间，并检查 λ 对 residual 权重尺度与检索优化收敛率的影响。

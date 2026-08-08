@@ -38,7 +38,8 @@ the four requested plots.
 
 Run the quick smoke grid or the multi-seed research grid in Colab:
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Heptazero/nn-labs/blob/agent/add-lap-associative-memory-colab/notebooks/lap_associative_memory_colab.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/lap_associative_memory/lap_associative_memory_colab.ipynb)
 
-The notebook runs entirely in Colab. Its quick configuration verifies the full
-pipeline; switch `FULL_EXPERIMENT` to `True` for the larger scan.
+The entire experiment—Colab notebook, implementation, tests, runner, and
+documentation—lives in this one folder. The notebook runs entirely in Colab;
+switch `FULL_EXPERIMENT` to `True` for the larger scan.

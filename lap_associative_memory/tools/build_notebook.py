@@ -31,7 +31,7 @@ cells = [
     code(
         "import os, subprocess\n"
         "REPO_URL = \"https://github.com/Heptazero/nn-labs.git\"\n"
-        "REVISION = \"agent/add-lap-associative-memory-colab\"\n"
+        "REVISION = \"main\"\n"
         "REPO_DIR = \"/content/nn-labs\"\n"
         "if not os.path.exists(REPO_DIR):\n"
         "    subprocess.run([\"git\", \"clone\", \"--branch\", REVISION, \"--depth\", \"1\", REPO_URL, REPO_DIR], check=True)\n"
@@ -105,6 +105,6 @@ notebook = {
     "nbformat_minor": 5,
 }
 
-target = Path(__file__).parents[1] / "notebooks" / "lap_associative_memory_colab.ipynb"
+target = Path(__file__).parents[1] / "lap_associative_memory_colab.ipynb"
 target.write_text(json.dumps(notebook, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 print(target)
