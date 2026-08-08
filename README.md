@@ -53,6 +53,6 @@ Run the quick smoke grid or the multi-seed research grid in Colab:
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/lap_associative_memory/lap_associative_memory_colab.ipynb)
 
-The entire experiment—Colab notebook, implementation, tests, runner, and
-documentation—lives in this one folder. The notebook runs entirely in Colab;
-switch `FULL_EXPERIMENT` to `True` for the larger scan.
+The folder contains one self-contained Colab notebook: implementation, experiment
+configuration, evaluation, and plots are all embedded in it. Switch
+`FULL_EXPERIMENT` to `True` for the larger scan.
