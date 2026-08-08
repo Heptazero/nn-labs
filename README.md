@@ -25,6 +25,19 @@ The original capacity result remains as a quick preview:
 
 ![capacity curve](./hopfield-1982/capacity_curve.png)
 
+### [`hopfield is all you need/`](./hopfield%20is%20all%20you%20need/)
+
+A Colab-ready experiment based on the MNIST-bags example from
+*Hopfield Networks is All You Need*. It retains the official experiment while
+using a current PyTorch implementation of the variable-length bag loader. The
+notebook uses the pipeline
+`CNN -> HopfieldPooling -> sigmoid` to classify a bag according to whether it
+contains a target digit.
+
+Run it directly in Colab:
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/hopfield%20is%20all%20you%20need/mnist_bags_hopfield_pooling_colab.ipynb)
+
 Recall degrades sharply around `n ≈ 15` (i.e. `n ≈ 0.15N`), consistent with the paper's reported capacity of `~0.15N` (later refined to the precise `~0.138N` by Amit, Gutfreund & Sompolinsky, 1985, via the replica method).
 
 ### [`lap_associative_memory/`](./lap_associative_memory)
