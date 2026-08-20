@@ -1,30 +1,29 @@
-# MNIST Bags with HopfieldPooling
+# 使用 HopfieldPooling 处理 MNIST Bags
 
-This starts from the official MNIST-bags demonstration from
-[Hopfield Networks is All You Need](https://arxiv.org/abs/2008.02217) and is
-made directly runnable with current Colab, PyTorch, and NumPy versions.
+本实验基于论文
+[Hopfield Networks is All You Need](https://arxiv.org/abs/2008.02217)
+配套仓库中的官方 MNIST Bags 示例，并适配当前版本的 Colab、PyTorch 与 NumPy。
 
-The model is:
+核心模型流程如下：
 
 ```text
-MNIST image -> CNN feature extractor -> HopfieldPooling -> sigmoid classifier
+MNIST 图片 -> CNN 特征提取器 -> HopfieldPooling -> sigmoid 二分类器
 ```
 
-Each sample is a bag of MNIST images with a variable length sampled around ten
-instances. A positive bag contains at least one target digit (9 by default); a
-negative bag contains no target digit.
+每个样本是一个包含若干 MNIST 图片的变长 bag。bag 中只要出现至少一个目标数字
+（默认是 `9`）就是正类，否则是负类。
 
-The Attention and GatedAttention baselines, HopfieldPooling model, sampling
-rule, training loops, hyperparameters, and plots are retained. The historical
-ADMIL data loader is replaced by an equivalent local implementation using
-current APIs. Variable-length bags remain separate and are loaded with
-`batch_size=1`, so no padding or invalid cross-bag `torch.stack` is needed.
-The setup cell downloads both `hopfield-layers` and the original
-`AttentionDeepMIL` dependency; ADMIL now supplies only the two baseline models.
+同一个任务上会分别训练 `Attention`、`GatedAttention` 和 `HopfieldPooling`
+三种模型。实验保留官方抽样规则、训练循环、超参数与绘图方式。旧版 ADMIL
+数据加载器被等价的当前 API 实现替代；变长 bag 仍彼此独立，并使用
+`batch_size=1` 加载，因此不需要 padding，也不会跨 bag 错误调用 `torch.stack`。
 
-Open the notebook in Colab:
+第一个代码单元会直接从 GitHub 安装固定版本的 `hopfield-layers`，下载固定版本的
+`AttentionDeepMIL`，随后导入 `HopfieldPooling`。ADMIL 在这里仅提供两个基线模型。
+
+在 Colab 中打开 notebook：
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/hopfield%20is%20all%20you%20need/mnist_bags_hopfield_pooling_colab.ipynb)
 
-Choose **Runtime -> Restart session and run all**. The first code cell installs
-the two upstream repositories and switches to the notebook working directory.
+选择 **运行时 -> 重新启动会话并全部运行**。第一个代码单元成功时会在末尾显示
+`hflayers 导入成功`。
