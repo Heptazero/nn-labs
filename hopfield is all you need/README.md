@@ -3,9 +3,10 @@
 ## 1. MNIST 联想记忆：从经典 Hopfield 到现代 Hopfield
 
 [`hopfield_image_retrieval_colab.ipynb`](./hopfield_image_retrieval_colab.ipynb)
-按 `a 输入编码 -> b 存储 -> c 检索线索 -> d 动力学 -> e 测量 -> f 展示`
-组织公共组件。它比较经典 Hopfield、二值 Dense Associative Memory 和连续
-Modern Hopfield 的 MNIST 图像补全，并用错误像素比例或 MSE 代替纯图片演示。
+按 `a 储存输入 -> b 权重/记忆表征 -> c 检索初态 -> d 动力学 -> e 测量 -> f 展示`
+组织中文公共组件。经典 Hopfield 实验记录异步检索的能量、翻转步数与二维投影轨迹；
+二值 Dense Memory 和连续 Modern Hopfield 分别展示高阶匹配与注意力竞争。
+误差图同时显示单条目标数据和条件平均值，不以代表图片代替量化结果。
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/hopfield%20is%20all%20you%20need/hopfield_image_retrieval_colab.ipynb)
 
