@@ -1,4 +1,15 @@
-# 使用 HopfieldPooling 处理 MNIST Bags
+# Hopfield Networks is All You Need 实验
+
+## 1. MNIST 联想记忆：从经典 Hopfield 到现代 Hopfield
+
+[`hopfield_image_retrieval_colab.ipynb`](./hopfield_image_retrieval_colab.ipynb)
+按 `a 输入编码 -> b 存储 -> c 检索线索 -> d 动力学 -> e 测量 -> f 展示`
+组织公共组件。它比较经典 Hopfield、二值 Dense Associative Memory 和连续
+Modern Hopfield 的 MNIST 图像补全，并用错误像素比例或 MSE 代替纯图片演示。
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/hopfield%20is%20all%20you%20need/hopfield_image_retrieval_colab.ipynb)
+
+## 2. 使用 HopfieldPooling 处理 MNIST Bags
 
 本实验基于论文
 [Hopfield Networks is All You Need](https://arxiv.org/abs/2008.02217)
