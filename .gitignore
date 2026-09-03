@@ -5,3 +5,7 @@ __pycache__/
 results/
 .DS_Store
 NotoSansCJKtc-Regular.otf
+mnist_data/
+cifar_data/
+tiny-imagenet-200/
+executed_check.ipynb

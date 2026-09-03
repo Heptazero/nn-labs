@@ -40,6 +40,30 @@ Run it directly in Colab:
 
 Recall degrades sharply around `n ≈ 15` (i.e. `n ≈ 0.15N`), consistent with the paper's reported capacity of `~0.15N` (later refined to the precise `~0.138N` by Amit, Gutfreund & Sompolinsky, 1985, via the replica method).
 
+### [`hopfield-fenchel-young/`](./hopfield-fenchel-young)
+
+A Colab-ready slice of the MNIST retrieval-capacity experiment (§7.3, Figure 11)
+from *Hopfield-Fenchel-Young Networks: A Unified Framework for Associative Memory
+Retrieval*. Compares Classic Hopfield (`tanh(β·W·Q)`), softmax (1-entmax), and
+sparsemax (2-entmax) readouts as the number of stored memories grows from 2 to
+4096, using the official success criterion (cosine similarity > 0.9). Uses the
+pure-PyTorch `entmax` package instead of the official repo's LP-SparseMAP
+dependency, which needs a local Eigen/Cython build.
+
+Run it directly in Colab:
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/hopfield-fenchel-young/hopfield_fenchel_young_capacity_colab.ipynb)
+
+Classic Hopfield collapses almost immediately (median success rate ~0.03 by
+n=8); softmax degrades gracefully at large n (~0.988 at n=4096); sparsemax
+stays pinned at 1.000 throughout. Section 6 of the notebook verifies this
+against the paper's margin theory (Proposition 9): sparsemax's exact-zero
+threshold behavior, not just a smaller β, is what makes it robust.
+
+Not yet covered: normmax, ℓ2/layer-normalization post-transformations,
+CIFAR10/Tiny ImageNet, β=1, and the official 5-step fixed-point iteration
+(this notebook does 1 step).
+
 ### [`lap_associative_memory/`](./lap_associative_memory)
 
 Tests whether Locality–Autonomy Principle (LAP) regularization reduces
