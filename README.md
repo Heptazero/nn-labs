@@ -25,6 +25,27 @@ The original capacity result remains as a quick preview:
 
 ![capacity curve](./hopfield-1982/capacity_curve.png)
 
+### [`hopfield-1985/`](./hopfield-1985)
+
+Reproduces the zero-temperature replica-symmetric results from Amit, Gutfreund,
+and Sompolinsky's 1985 paper *"Storing Infinite Numbers of Patterns in a
+Spin-Glass Model of Neural Networks"*.
+
+- Parametric solution of the nonzero FM branches from Eqs. (9)–(10)
+- Figure 1 error curve and the critical point `alpha_c ≈ 0.138`, `m_c ≈ 0.967`
+- FM/SG energy comparison separating metastable capacity `0.138` from the
+  global-ground-state crossing `0.051`
+- Eq. (12) scaling that reconciles linear approximate storage with the stricter
+  zero-error scale, plus a clearly separated finite-`N` dynamics check
+
+Run the annotated notebook in Colab:
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/hopfield-1985/hopfield_1985.ipynb)
+
+The notebook installs no packages. Every plot is followed by its reproduction
+criterion, interpretation, and evidence boundary. The finite-`N` simulation is
+marked as a mechanism extension rather than paper-reported data.
+
 ### [`hopfield is all you need/`](./hopfield%20is%20all%20you%20need/)
 
 A Colab-ready experiment based on the MNIST-bags example from
