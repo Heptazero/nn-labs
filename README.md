@@ -46,6 +46,20 @@ The notebook installs no packages. Every plot is followed by its reproduction
 criterion, interpretation, and evidence boundary. The finite-`N` simulation is
 marked as a mechanism extension rather than paper-reported data.
 
+### [`hopfield-benchmark/`](./hopfield-benchmark)
+
+A task-centered protocol for comparing Hopfield model families without
+duplicating the same retrieval and capacity experiments in every paper
+notebook. It keeps the existing component pipeline:
+
+`memory input -> model storage -> retrieval cue -> dynamics -> metrics -> plots`
+
+The protocol separates universal associative-memory tasks from paper-specific
+mechanism experiments, defines matched-storage and matched-compute comparisons,
+and specifies when multiple models are eligible to appear as curves in the same
+figure. This directory currently contains the protocol only; no benchmark
+results have been run or claimed.
+
 ### [`hopfield is all you need/`](./hopfield%20is%20all%20you%20need/)
 
 A Colab-ready experiment based on the MNIST-bags example from
