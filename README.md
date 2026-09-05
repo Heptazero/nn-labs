@@ -57,8 +57,11 @@ notebook. It keeps the existing component pipeline:
 The protocol separates universal associative-memory tasks from paper-specific
 mechanism experiments, defines matched-storage and matched-compute comparisons,
 and specifies when multiple models are eligible to appear as curves in the same
-figure. This directory currently contains the protocol only; no benchmark
-results have been run or claimed.
+figure. The Phase 1 Colab notebook and adapter skeleton now cover Classical
+Hopfield and Polynomial DAM under paired trials. The code has not been executed
+locally or in Colab, so no benchmark results are claimed yet.
+
+[Open the Phase 1 benchmark in Colab](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/hopfield-benchmark/hopfield_benchmark_phase1_colab.ipynb).
 
 ### [`hopfield is all you need/`](./hopfield%20is%20all%20you%20need/)
 
