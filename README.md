@@ -57,11 +57,14 @@ notebook. It keeps the existing component pipeline:
 The protocol separates universal associative-memory tasks from paper-specific
 mechanism experiments, defines matched-storage and matched-compute comparisons,
 and specifies when multiple models are eligible to appear as curves in the same
-figure. The phase-one notebook now contains six inline model adapters, a paired
-runner, and plotting code. It has no saved execution outputs; shared model
-modules have not yet been extracted. See the [question inventory and implementation
-plan](./hopfield-benchmark/QUESTIONS.md) for existing coverage, missing experiments,
-the proposed file split, and Colab sizing. Cross-model results remain unverified.
+figure. Six model adapters, shared tasks, metrics, a paired runner, and plotting
+code now live in [`am_bench/`](./am_bench/). The notebooks load a pinned source
+commit automatically; only one notebook needs to be opened in Colab.
+Start with [Q04: repeated retrieval](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/hopfield-benchmark/retrieval_dynamics.ipynb):
+three models, paired trajectories, correction/damage counts, and resumable batches.
+See the [13-question inventory](./hopfield-benchmark/QUESTIONS.md) for coverage
+and remaining work. Static and checkpoint-storage checks passed; numerical
+parity and Colab execution remain pending. No cross-model result is claimed.
 
 ### [`hopfield is all you need/`](./hopfield%20is%20all%20you%20need/)
 
