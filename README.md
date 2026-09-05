@@ -57,8 +57,11 @@ notebook. It keeps the existing component pipeline:
 The protocol separates universal associative-memory tasks from paper-specific
 mechanism experiments, defines matched-storage and matched-compute comparisons,
 and specifies when multiple models are eligible to appear as curves in the same
-figure. This directory currently contains the protocol only; no benchmark
-results have been run or claimed.
+figure. The phase-one notebook now contains six inline model adapters, a paired
+runner, and plotting code. It has no saved execution outputs; shared model
+modules have not yet been extracted. See the [question inventory and implementation
+plan](./hopfield-benchmark/QUESTIONS.md) for existing coverage, missing experiments,
+the proposed file split, and Colab sizing. Cross-model results remain unverified.
 
 ### [`hopfield is all you need/`](./hopfield%20is%20all%20you%20need/)
 
