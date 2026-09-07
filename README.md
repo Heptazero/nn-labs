@@ -66,6 +66,15 @@ See the [13-question inventory](./hopfield-benchmark/QUESTIONS.md) for coverage
 and remaining work. Static and checkpoint-storage checks passed; numerical
 parity and Colab execution remain pending. No cross-model result is claimed.
 
+The [three-pattern curvature gate](./hopfield-benchmark/CURVATURE_GATE_RESULTS.md)
+tests whether the decay rate of `||dx/dt||` separates stored patterns from the
+textbook majority mixture at `N=20, P=3`. Its confirmatory run preserves all
+ineligible pattern banks, uses held-out-bank thresholds, and adds matched local
+perturbations plus a Jacobian oracle to distinguish transient distance from local
+contraction. The frozen `beta=8` gate passed, but initial speed was an even stronger
+classifier and the local result did not persist at `beta=10`; no joint anti-Hebbian
+dynamics claim is made.
+
 ### [`hopfield is all you need/`](./hopfield%20is%20all%20you%20need/)
 
 A Colab-ready experiment based on the MNIST-bags example from
