@@ -1,0 +1,99 @@
+{
+  "decision": "STOP_CURVATURE_NARRATIVE",
+  "eligible_banks": 48,
+  "total_banks": 256,
+  "arms": {
+    "frozen": {
+      "gate_activation_pure": 0.0,
+      "gate_activation_mixture": 0.0,
+      "pure_damage_rate": 0.0,
+      "mixture_escape_rate": 0.0,
+      "convergence_rate": 1.0,
+      "mean_exposure": 0.0,
+      "mean_max_weight_deviation": 0.0
+    },
+    "always_on": {
+      "gate_activation_pure": 1.0,
+      "gate_activation_mixture": 1.0,
+      "pure_damage_rate": 0.2152777777777778,
+      "mixture_escape_rate": 0.25,
+      "convergence_rate": 0.8229166666666666,
+      "mean_exposure": 1.0000000000000002,
+      "mean_max_weight_deviation": 0.4234713138789083
+    },
+    "initial_speed_gate": {
+      "gate_activation_pure": 0.06944444444444445,
+      "gate_activation_mixture": 0.75,
+      "pure_damage_rate": 0.06944444444444445,
+      "mixture_escape_rate": 0.25,
+      "convergence_rate": 0.90625,
+      "mean_exposure": 0.2395833333333334,
+      "mean_max_weight_deviation": 0.09072179571562426
+    },
+    "decay_rate_gate": {
+      "gate_activation_pure": 0.06944444444444445,
+      "gate_activation_mixture": 0.75,
+      "pure_damage_rate": 0.06944444444444445,
+      "mixture_escape_rate": 0.25,
+      "convergence_rate": 0.90625,
+      "mean_exposure": 0.2395833333333334,
+      "mean_max_weight_deviation": 0.09072179571562426
+    }
+  },
+  "decay_minus_initial_escape": 0.0,
+  "decay_minus_initial_escape_ci95": [
+    0.0,
+    0.0
+  ],
+  "decay_minus_initial_damage": 0.0,
+  "decay_minus_initial_damage_ci95": [
+    0.0,
+    0.0
+  ],
+  "initial_minus_always_escape": 0.0,
+  "initial_minus_always_escape_ci95": [
+    0.0,
+    0.0
+  ],
+  "initial_minus_always_damage": -0.14583333333333331,
+  "initial_minus_always_damage_ci95": [
+    -0.23611111111111108,
+    -0.06944444444444443
+  ],
+  "gate_decision_agreement": 1.0,
+  "gate_decision_disagreements": 0,
+  "initial_speed_vs_negative_rate_spearman": 0.980359336385034,
+  "config": {
+    "N": 20,
+    "P": 3,
+    "beta": 8.0,
+    "seed_start": 20000,
+    "bank_count": 256,
+    "probe_dt": 0.01,
+    "probe_horizon": 1.25,
+    "rate_fit_window": [
+      0.25,
+      1.25
+    ],
+    "rate_threshold": 0.9165554262224024,
+    "initial_speed_threshold": 0.05095881235895465,
+    "coupled_dt": 0.02,
+    "coupled_horizon": 30.0,
+    "gamma": 0.5,
+    "restore_mu": 0.2,
+    "plasticity_budget": 1.0,
+    "convergence_tol": 0.0001,
+    "weight_recovery_tol": 0.01,
+    "min_eligible_banks": 30,
+    "min_escape_advantage": 0.1,
+    "max_damage_disadvantage": 0.0
+  },
+  "config_sha256": "61b9fce67cccdb6f9d96aa80311856c4326de38f343c66aa6732e7cea241edbc",
+  "implementation_sha256": "e860b692a9f2b0f9431a9b7076d2eb3c7ba426a185d96fd385f5c3c276a93f6e",
+  "runtime": {
+    "python": "3.14.7",
+    "numpy": "2.5.2",
+    "device": "cpu",
+    "dtype": "float64"
+  }
+}

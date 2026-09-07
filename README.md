@@ -75,6 +75,13 @@ contraction. The frozen `beta=8` gate passed, but initial speed was an even stro
 classifier and the local result did not persist at `beta=10`; no joint anti-Hebbian
 dynamics claim is made.
 
+The follow-up [joint anti-Hebbian gate](./hopfield-benchmark/JOINT_GATE_RESULTS.md)
+connects the scalar decision to coupled state/weight dynamics with a matched
+plasticity budget. On 48 eligible unseen banks, the initial-speed and decay-rate
+gates made identical decisions for all 192 starts and produced identical outcomes.
+Gating reduced pure-memory damage relative to always-on anti-Hebbian plasticity,
+but trajectory decay added no information beyond the instantaneous speed.
+
 ### [`hopfield is all you need/`](./hopfield%20is%20all%20you%20need/)
 
 A Colab-ready experiment based on the MNIST-bags example from
