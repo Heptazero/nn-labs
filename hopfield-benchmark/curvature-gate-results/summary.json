@@ -1,0 +1,548 @@
+{
+  "decision": "PASS_RATE_AND_CURVATURE_GATE",
+  "primary_beta": 8.0,
+  "primary_oracle_spearman": 0.7438266344389044,
+  "summaries": [
+    {
+      "beta": 8.0,
+      "probe": "seed_relaxation",
+      "eligible_banks": 32,
+      "total_banks": 256,
+      "valid_exponential_fraction": 1.0,
+      "orientation": "mixture_slower",
+      "pure_rate_median": 0.9993668388220777,
+      "mixture_rate_median": 0.8337440136227271,
+      "oriented_paired_mean_gap": 0.1382776385361515,
+      "paired_gap_ci95": [
+        0.08982224958474218,
+        0.17936712608100389
+      ],
+      "paired_effect_dz": 1.039293274175487,
+      "rate_gate": {
+        "balanced_accuracy": 0.828125,
+        "auc": 0.9287109375,
+        "sensitivity": 0.75,
+        "specificity": 0.90625,
+        "folds": [
+          {
+            "fold": 0,
+            "orientation": -1.0,
+            "threshold": 0.9083016165066605
+          },
+          {
+            "fold": 1,
+            "orientation": -1.0,
+            "threshold": 0.923637825183483
+          },
+          {
+            "fold": 2,
+            "orientation": -1.0,
+            "threshold": 0.9097154921354864
+          },
+          {
+            "fold": 3,
+            "orientation": -1.0,
+            "threshold": 0.9012192175455799
+          },
+          {
+            "fold": 4,
+            "orientation": -1.0,
+            "threshold": 0.9236378251834829
+          }
+        ]
+      },
+      "initial_speed_gate": {
+        "balanced_accuracy": 0.84375,
+        "auc": 0.95703125,
+        "sensitivity": 0.78125,
+        "specificity": 0.90625,
+        "folds": [
+          {
+            "fold": 0,
+            "orientation": 1.0,
+            "threshold": 0.050925001164769154
+          },
+          {
+            "fold": 1,
+            "orientation": 1.0,
+            "threshold": 0.05095881235895465
+          },
+          {
+            "fold": 2,
+            "orientation": 1.0,
+            "threshold": 0.05089118997058367
+          },
+          {
+            "fold": 3,
+            "orientation": 1.0,
+            "threshold": 0.04351347982068838
+          },
+          {
+            "fold": 4,
+            "orientation": 1.0,
+            "threshold": 0.05095881235895465
+          }
+        ]
+      },
+      "pass": true
+    },
+    {
+      "beta": 8.0,
+      "probe": "matched_local_probe",
+      "eligible_banks": 32,
+      "total_banks": 256,
+      "valid_exponential_fraction": 0.9951171875,
+      "orientation": "mixture_slower",
+      "pure_rate_median": 1.0000028207824756,
+      "mixture_rate_median": 0.9373299260260284,
+      "oriented_paired_mean_gap": 0.07573007120177039,
+      "paired_gap_ci95": [
+        0.05088299120574125,
+        0.10483317978785937
+      ],
+      "paired_effect_dz": 0.9396999885330928,
+      "rate_gate": {
+        "balanced_accuracy": 0.828125,
+        "auc": 0.8671875,
+        "sensitivity": 0.6875,
+        "specificity": 0.96875,
+        "folds": [
+          {
+            "fold": 0,
+            "orientation": -1.0,
+            "threshold": 0.9686659288517712
+          },
+          {
+            "fold": 1,
+            "orientation": -1.0,
+            "threshold": 0.9690150616779452
+          },
+          {
+            "fold": 2,
+            "orientation": -1.0,
+            "threshold": 0.9678239254069342
+          },
+          {
+            "fold": 3,
+            "orientation": -1.0,
+            "threshold": 0.9750590081873554
+          },
+          {
+            "fold": 4,
+            "orientation": -1.0,
+            "threshold": 0.968666373404252
+          }
+        ]
+      },
+      "initial_speed_gate": {
+        "balanced_accuracy": 0.84375,
+        "auc": 0.90625,
+        "sensitivity": 0.6875,
+        "specificity": 1.0,
+        "folds": [
+          {
+            "fold": 0,
+            "orientation": 1.0,
+            "threshold": 0.05034073871254038
+          },
+          {
+            "fold": 1,
+            "orientation": 1.0,
+            "threshold": 0.05022221581642286
+          },
+          {
+            "fold": 2,
+            "orientation": 1.0,
+            "threshold": 0.05027392706099029
+          },
+          {
+            "fold": 3,
+            "orientation": 1.0,
+            "threshold": 0.05018931650010319
+          },
+          {
+            "fold": 4,
+            "orientation": 1.0,
+            "threshold": 0.05024809152968067
+          }
+        ]
+      },
+      "pass": true
+    },
+    {
+      "beta": 6.0,
+      "probe": "seed_relaxation",
+      "eligible_banks": 9,
+      "total_banks": 256,
+      "valid_exponential_fraction": 1.0,
+      "orientation": "mixture_slower",
+      "pure_rate_median": 0.9846418313139205,
+      "mixture_rate_median": 0.9169446179547749,
+      "oriented_paired_mean_gap": 0.04536194048008183,
+      "paired_gap_ci95": [
+        -0.07111732124819004,
+        0.14169520852118442
+      ],
+      "paired_effect_dz": 0.2732037101909647,
+      "rate_gate": {
+        "balanced_accuracy": 0.7777777777777777,
+        "auc": 0.7901234567901234,
+        "sensitivity": 0.8888888888888888,
+        "specificity": 0.6666666666666666,
+        "folds": [
+          {
+            "fold": 0,
+            "orientation": -1.0,
+            "threshold": 0.9507932246343477
+          },
+          {
+            "fold": 1,
+            "orientation": -1.0,
+            "threshold": 0.9507932246343479
+          },
+          {
+            "fold": 2,
+            "orientation": -1.0,
+            "threshold": 0.9507932246343477
+          },
+          {
+            "fold": 3,
+            "orientation": -1.0,
+            "threshold": 0.950793224634348
+          },
+          {
+            "fold": 4,
+            "orientation": -1.0,
+            "threshold": 0.9507932246343475
+          }
+        ]
+      },
+      "initial_speed_gate": {
+        "balanced_accuracy": 0.8888888888888888,
+        "auc": 0.9135802469135802,
+        "sensitivity": 1.0,
+        "specificity": 0.7777777777777778,
+        "folds": [
+          {
+            "fold": 0,
+            "orientation": 1.0,
+            "threshold": 0.04462588247946968
+          },
+          {
+            "fold": 1,
+            "orientation": 1.0,
+            "threshold": 0.04462588247946964
+          },
+          {
+            "fold": 2,
+            "orientation": 1.0,
+            "threshold": 0.052286901091840136
+          },
+          {
+            "fold": 3,
+            "orientation": 1.0,
+            "threshold": 0.04462588247946964
+          },
+          {
+            "fold": 4,
+            "orientation": 1.0,
+            "threshold": 0.04462588247946968
+          }
+        ]
+      },
+      "pass": false
+    },
+    {
+      "beta": 6.0,
+      "probe": "matched_local_probe",
+      "eligible_banks": 9,
+      "total_banks": 256,
+      "valid_exponential_fraction": 1.0,
+      "orientation": "mixture_slower",
+      "pure_rate_median": 1.0001680904021673,
+      "mixture_rate_median": 0.9675279815949516,
+      "oriented_paired_mean_gap": 0.04057170752898767,
+      "paired_gap_ci95": [
+        0.012287809295942273,
+        0.07483859038435446
+      ],
+      "paired_effect_dz": 0.8031830042220355,
+      "rate_gate": {
+        "balanced_accuracy": 0.7222222222222222,
+        "auc": 0.9506172839506173,
+        "sensitivity": 0.5555555555555556,
+        "specificity": 0.8888888888888888,
+        "folds": [
+          {
+            "fold": 0,
+            "orientation": -1.0,
+            "threshold": 0.9837783914614318
+          },
+          {
+            "fold": 1,
+            "orientation": -1.0,
+            "threshold": 0.9874810029819041
+          },
+          {
+            "fold": 2,
+            "orientation": -1.0,
+            "threshold": 0.9810834155525759
+          },
+          {
+            "fold": 3,
+            "orientation": -1.0,
+            "threshold": 0.9887914462288022
+          },
+          {
+            "fold": 4,
+            "orientation": -1.0,
+            "threshold": 0.9838480359985594
+          }
+        ]
+      },
+      "initial_speed_gate": {
+        "balanced_accuracy": 0.7777777777777778,
+        "auc": 0.7654320987654321,
+        "sensitivity": 0.5555555555555556,
+        "specificity": 1.0,
+        "folds": [
+          {
+            "fold": 0,
+            "orientation": 1.0,
+            "threshold": 0.050171477191780015
+          },
+          {
+            "fold": 1,
+            "orientation": 1.0,
+            "threshold": 0.05032734214050086
+          },
+          {
+            "fold": 2,
+            "orientation": 1.0,
+            "threshold": 0.05042429867626095
+          },
+          {
+            "fold": 3,
+            "orientation": 1.0,
+            "threshold": 0.050203543627830347
+          },
+          {
+            "fold": 4,
+            "orientation": 1.0,
+            "threshold": 0.050172232300180045
+          }
+        ]
+      },
+      "pass": false
+    },
+    {
+      "beta": 10.0,
+      "probe": "seed_relaxation",
+      "eligible_banks": 32,
+      "total_banks": 256,
+      "valid_exponential_fraction": 1.0,
+      "orientation": "mixture_slower",
+      "pure_rate_median": 0.9999412297897178,
+      "mixture_rate_median": 0.9116368343552541,
+      "oriented_paired_mean_gap": 0.0632822827466328,
+      "paired_gap_ci95": [
+        0.03636402945529829,
+        0.0867059911622073
+      ],
+      "paired_effect_dz": 0.8433903725862634,
+      "rate_gate": {
+        "balanced_accuracy": 0.828125,
+        "auc": 0.9306640625,
+        "sensitivity": 0.75,
+        "specificity": 0.90625,
+        "folds": [
+          {
+            "fold": 0,
+            "orientation": -1.0,
+            "threshold": 0.9586875117685085
+          },
+          {
+            "fold": 1,
+            "orientation": -1.0,
+            "threshold": 0.9588925118396945
+          },
+          {
+            "fold": 2,
+            "orientation": -1.0,
+            "threshold": 0.9527103179830001
+          },
+          {
+            "fold": 3,
+            "orientation": -1.0,
+            "threshold": 0.9522483609446476
+          },
+          {
+            "fold": 4,
+            "orientation": -1.0,
+            "threshold": 0.9622281828963468
+          }
+        ]
+      },
+      "initial_speed_gate": {
+        "balanced_accuracy": 0.84375,
+        "auc": 0.95703125,
+        "sensitivity": 0.78125,
+        "specificity": 0.90625,
+        "folds": [
+          {
+            "fold": 0,
+            "orientation": 1.0,
+            "threshold": 0.018933897434742445
+          },
+          {
+            "fold": 1,
+            "orientation": 1.0,
+            "threshold": 0.01893663506889167
+          },
+          {
+            "fold": 2,
+            "orientation": 1.0,
+            "threshold": 0.01893115980059323
+          },
+          {
+            "fold": 3,
+            "orientation": 1.0,
+            "threshold": 0.016164470549538224
+          },
+          {
+            "fold": 4,
+            "orientation": 1.0,
+            "threshold": 0.018936635068891667
+          }
+        ]
+      },
+      "pass": true
+    },
+    {
+      "beta": 10.0,
+      "probe": "matched_local_probe",
+      "eligible_banks": 32,
+      "total_banks": 256,
+      "valid_exponential_fraction": 1.0,
+      "orientation": "mixture_slower",
+      "pure_rate_median": 1.0000001573250175,
+      "mixture_rate_median": 0.9955904199195714,
+      "oriented_paired_mean_gap": 0.016807337377338697,
+      "paired_gap_ci95": [
+        0.00544606616721124,
+        0.03288771623175684
+      ],
+      "paired_effect_dz": 0.40557668863109625,
+      "rate_gate": {
+        "balanced_accuracy": 0.78125,
+        "auc": 0.7666015625,
+        "sensitivity": 0.59375,
+        "specificity": 0.96875,
+        "folds": [
+          {
+            "fold": 0,
+            "orientation": -1.0,
+            "threshold": 0.9977952801375394
+          },
+          {
+            "fold": 1,
+            "orientation": -1.0,
+            "threshold": 0.9978812838636825
+          },
+          {
+            "fold": 2,
+            "orientation": -1.0,
+            "threshold": 0.9966080894117019
+          },
+          {
+            "fold": 3,
+            "orientation": -1.0,
+            "threshold": 0.9985248550665407
+          },
+          {
+            "fold": 4,
+            "orientation": -1.0,
+            "threshold": 0.9977952886222945
+          }
+        ]
+      },
+      "initial_speed_gate": {
+        "balanced_accuracy": 0.796875,
+        "auc": 0.8125,
+        "sensitivity": 0.59375,
+        "specificity": 1.0,
+        "folds": [
+          {
+            "fold": 0,
+            "orientation": 1.0,
+            "threshold": 0.05008298012318019
+          },
+          {
+            "fold": 1,
+            "orientation": 1.0,
+            "threshold": 0.05005479424135226
+          },
+          {
+            "fold": 2,
+            "orientation": 1.0,
+            "threshold": 0.05007540599814049
+          },
+          {
+            "fold": 3,
+            "orientation": 1.0,
+            "threshold": 0.05005018171603118
+          },
+          {
+            "fold": 4,
+            "orientation": 1.0,
+            "threshold": 0.05006510093905399
+          }
+        ]
+      },
+      "pass": false
+    }
+  ],
+  "config": {
+    "N": 20,
+    "P": 3,
+    "beta_primary": 8.0,
+    "beta_robustness": [
+      6.0,
+      10.0
+    ],
+    "seed_start": 10000,
+    "bank_count": 256,
+    "equilibrium_dt": 0.03,
+    "equilibrium_max_steps": 4000,
+    "equilibrium_tol": 1e-09,
+    "stability_margin_tol": 1e-05,
+    "trajectory_dt": 0.01,
+    "trajectory_horizon": 4.0,
+    "seed_fit_window": [
+      0.25,
+      1.25
+    ],
+    "local_fit_window": [
+      2.0,
+      4.0
+    ],
+    "perturbation_norm": 0.05,
+    "perturbations_per_state": 8,
+    "r2_min": 0.95,
+    "min_eligible_banks": 30,
+    "min_valid_fraction": 0.9,
+    "min_balanced_accuracy": 0.75,
+    "min_auc": 0.8,
+    "min_abs_paired_effect": 0.8,
+    "min_oracle_spearman": 0.7,
+    "bootstrap_repetitions": 10000
+  },
+  "config_sha256": "f747fd1c4408dbc56aa8c0f085dff9e2ec167cc7a2b17576e4f0121a9bf591f2",
+  "implementation_sha256": "c76631e8aae9d02d7059dc3c690610a01af7c9918ac48d46e68eb51dd5fd69e0",
+  "runtime": {
+    "python": "3.14.7",
+    "numpy": "2.5.2",
+    "device": "cpu",
+    "dtype": "float64"
+  }
+}
