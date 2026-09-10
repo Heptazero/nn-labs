@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "conditions": 32,
+  "endpoint_valid": true,
+  "endpoint_opposition_valid": true,
+  "endpoint_converged": true,
+  "endpoint_separated": true,
+  "max_endpoint_speed": 2.0430478623693835e-07,
+  "min_endpoint_margin_magnitude": 0.033765743899854546,
+  "identifiable_fraction_after_start": 1.0,
+  "median_error_after_start": 0.0,
+  "p90_error_after_start": 0.0,
+  "max_boundary_deviation_from_half": 0.0,
+  "max_boundary_bracket_width": 0.0
+}
