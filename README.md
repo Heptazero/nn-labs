@@ -1,8 +1,18 @@
-# nn-labs
+# Neural Network Paper Reproductions
 
-Small, from-scratch reproductions of neural network papers and mechanisms — no framework magic, just NumPy and the original equations.
+The GitHub repository remains named `nn-labs`. It contains paper reproductions, supplied source snapshots, and clearly separated mechanism experiments. Existing course notebooks are left in place for now; new machine-learning and data-mining coursework belongs in a separate course repository.
 
 ## Contents
+
+### [`rnn-warping-2025/`](./rnn-warping-2025)
+
+Reproduces the code supplied with *"RNNs Perform Task Computations by Dynamically Warping Neural Representations"*. The paper authors' snapshot is preserved under `upstream/`; Colab-ready copies live under `reproduction/`, so later fixes and extensions cannot be mistaken for original source.
+
+Run without Google Drive:
+
+- [Static network](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/rnn-warping-2025/reproduction/static_network_colab.ipynb)
+- [Evidence integration](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/rnn-warping-2025/reproduction/evidence_integration_colab.ipynb)
+- [Working memory](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/rnn-warping-2025/reproduction/wm_colab.ipynb)
 
 ### [`hopfield-1982/`](./hopfield-1982)
 
