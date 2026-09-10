@@ -8,7 +8,7 @@ nn-labs/
 │   ├── reproductions/   # 单篇论文复现
 │   ├── benchmarks/      # 跨论文、同协议比较
 │   └── experiments/     # 论文之外的机制实验
-└── rnn/
+└── representation-geometry/  # 表征空间、神经流形与几何动力学
     └── reproductions/
 ```
 
@@ -33,10 +33,10 @@ nn-labs/
 - [LAP associative memory](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/associative-memory/experiments/lap-associative-memory/lap_associative_memory_colab.ipynb)
 - [Modern Hopfield playground](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/associative-memory/experiments/modern-hopfield-playground.ipynb)
 
-### RNN：论文复现
+### Representation geometry：论文复现
 
-- [Static network](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/rnn/reproductions/2025-rnns-dynamic-warping/reproduction/static_network_colab.ipynb)
-- [Evidence integration](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/rnn/reproductions/2025-rnns-dynamic-warping/reproduction/evidence_integration_colab.ipynb)
-- [Working memory](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/rnn/reproductions/2025-rnns-dynamic-warping/reproduction/wm_colab.ipynb)
+- [Static network](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/representation-geometry/reproductions/2025-dynamic-warping-neural-representations/reproduction/static_network_colab.ipynb)
+- [Evidence integration](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/representation-geometry/reproductions/2025-dynamic-warping-neural-representations/reproduction/evidence_integration_colab.ipynb)
+- [Working memory](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/representation-geometry/reproductions/2025-dynamic-warping-neural-representations/reproduction/wm_colab.ipynb)
 
 打开任一链接后选择 **Runtime → Restart session and run all**。Notebook 会使用 Colab 预装环境；只有 Colab 缺少的依赖才会在首个环境单元安装。

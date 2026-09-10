@@ -63,9 +63,9 @@ if not (REPO_DIR / ".git").exists():
 
 SOURCE_DIR = (
     REPO_DIR
-    / "rnn"
+    / "representation-geometry"
     / "reproductions"
-    / "2025-rnns-dynamic-warping"
+    / "2025-dynamic-warping-neural-representations"
     / "upstream"
 )
 subprocess.run(
