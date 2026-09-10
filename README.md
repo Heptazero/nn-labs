@@ -1,143 +1,42 @@
-# Neural Network Paper Reproductions
+# nn-labs
 
-The GitHub repository remains named `nn-labs`. It contains paper reproductions, supplied source snapshots, and clearly separated mechanism experiments. Existing course notebooks are left in place for now; new machine-learning and data-mining coursework belongs in a separate course repository.
+神经网络论文复现、统一基准和机制实验。所有可执行入口优先提供 Colab；课程作业不放在本仓库。
 
-## Contents
+```text
+nn-labs/
+├── associative-memory/
+│   ├── reproductions/   # 单篇论文复现
+│   ├── benchmarks/      # 跨论文、同协议比较
+│   └── experiments/     # 论文之外的机制实验
+└── rnn/
+    └── reproductions/
+```
 
-### [`rnn-warping-2025/`](./rnn-warping-2025)
+## Colab 入口
 
-Reproduces the code supplied with *"RNNs Perform Task Computations by Dynamically Warping Neural Representations"*. The paper authors' snapshot is preserved under `upstream/`; Colab-ready copies live under `reproduction/`, so later fixes and extensions cannot be mistaken for original source.
+### Associative memory：论文复现
 
-Run without Google Drive:
+- [1982 Hopfield](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/associative-memory/reproductions/1982-hopfield-emergent-computation/hopfield_1982.ipynb)
+- [1985 Hopfield spin glass](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/associative-memory/reproductions/1985-hopfield-spin-glass/hopfield_1985.ipynb)
+- [2020 Hopfield image retrieval](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/associative-memory/reproductions/2020-hopfield-networks-is-all-you-need/hopfield_image_retrieval_colab.ipynb)
+- [2020 HopfieldPooling / MNIST Bags](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/associative-memory/reproductions/2020-hopfield-networks-is-all-you-need/mnist_bags_hopfield_pooling_colab.ipynb)
+- [2025 Hopfield-Fenchel-Young](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/associative-memory/reproductions/2025-hopfield-fenchel-young/hopfield_fenchel_young_capacity_colab.ipynb)
 
-- [Static network](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/rnn-warping-2025/reproduction/static_network_colab.ipynb)
-- [Evidence integration](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/rnn-warping-2025/reproduction/evidence_integration_colab.ipynb)
-- [Working memory](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/rnn-warping-2025/reproduction/wm_colab.ipynb)
+### Associative memory：统一基准
 
-### [`hopfield-1982/`](./hopfield-1982)
+- [Q04 retrieval dynamics](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/associative-memory/benchmarks/am-bench/notebooks/retrieval_dynamics.ipynb)
+- [Query-probe reliability](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/associative-memory/benchmarks/am-bench/notebooks/retrieval_reliability.ipynb)
+- [Phase-one benchmark](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/associative-memory/benchmarks/am-bench/notebooks/hopfield_benchmark_phase1_colab.ipynb)
 
-Reproduces the computational studies from Hopfield's 1982 PNAS paper *"Neural networks and physical systems with emergent collective computational abilities"*.
+### Associative memory：机制实验
 
-- 9 explicitly reported simulation experiments, in paper order
-- 3 executable mechanism extensions clearly separated from the reported experiments
-- Reusable `a/b/c/d/e/f` components for memories, weights, initial states, dynamics, measurements, and plots
-- Lightweight runs by default: trajectories and energy histories are recorded only when requested
+- [LAP associative memory](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/associative-memory/experiments/lap-associative-memory/lap_associative_memory_colab.ipynb)
+- [Modern Hopfield playground](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/associative-memory/experiments/modern-hopfield-playground.ipynb)
 
-Run the structured, annotated notebook in Colab:
+### RNN：论文复现
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/hopfield-1982/hopfield_1982_capacity.ipynb)
+- [Static network](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/rnn/reproductions/2025-rnns-dynamic-warping/reproduction/static_network_colab.ipynb)
+- [Evidence integration](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/rnn/reproductions/2025-rnns-dynamic-warping/reproduction/evidence_integration_colab.ipynb)
+- [Working memory](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/rnn/reproductions/2025-rnns-dynamic-warping/reproduction/wm_colab.ipynb)
 
-The notebook is self-contained: shared components live in its first collapsible section and every paper experiment is a short, visible composition such as `a1 → b1 → c3 → d1 → e1 → f1`. Each section includes the original paper location, experiment question, component recipe, result, and comparison with the paper.
-
-Choose **Runtime → Restart session and run all** in Colab. No local Python environment or companion `.py` module is required.
-
-The original capacity result remains as a quick preview:
-
-![capacity curve](./hopfield-1982/capacity_curve.png)
-
-### [`hopfield-1985/`](./hopfield-1985)
-
-Reproduces the zero-temperature replica-symmetric results from Amit, Gutfreund,
-and Sompolinsky's 1985 paper *"Storing Infinite Numbers of Patterns in a
-Spin-Glass Model of Neural Networks"*.
-
-- Parametric solution of the nonzero FM branches from Eqs. (9)–(10)
-- Figure 1 error curve and the critical point `alpha_c ≈ 0.138`, `m_c ≈ 0.967`
-- FM/SG energy comparison separating metastable capacity `0.138` from the
-  global-ground-state crossing `0.051`
-- Eq. (12) scaling that reconciles linear approximate storage with the stricter
-  zero-error scale, plus a clearly separated finite-`N` dynamics check
-
-Run the annotated notebook in Colab:
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/hopfield-1985/hopfield_1985.ipynb)
-
-The notebook installs no packages. Every plot is followed by its reproduction
-criterion, interpretation, and evidence boundary. The finite-`N` simulation is
-marked as a mechanism extension rather than paper-reported data.
-
-### [`hopfield-benchmark/`](./hopfield-benchmark)
-
-A task-centered protocol for comparing Hopfield model families without
-duplicating the same retrieval and capacity experiments in every paper
-notebook. It keeps the existing component pipeline:
-
-`memory input -> model storage -> retrieval cue -> dynamics -> metrics -> plots`
-
-The protocol separates universal associative-memory tasks from paper-specific
-mechanism experiments, defines matched-storage and matched-compute comparisons,
-and specifies when multiple models are eligible to appear as curves in the same
-figure. Six model adapters, shared tasks, metrics, a paired runner, and plotting
-code now live in [`am_bench/`](./am_bench/). The notebooks load a pinned source
-commit automatically; only one notebook needs to be opened in Colab.
-Start with [Q04: repeated retrieval](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/hopfield-benchmark/retrieval_dynamics.ipynb):
-three models, paired trajectories, correction/damage counts, and resumable batches.
-See the [13-question inventory](./hopfield-benchmark/QUESTIONS.md) for coverage
-and remaining work. Static and checkpoint-storage checks passed; numerical
-parity and Colab execution remain pending. No cross-model result is claimed.
-
-The separate [query-probe reliability notebook](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/hopfield-benchmark/retrieval_reliability.ipynb)
-tests fixed modern Hopfield retrieval with guided, random, and shuffled query
-perturbations. It retains the a/b/c/d/e/f pipeline and Chinese annotations/font
-setup. The full synthetic grid was executed locally: majority voting rescued
-no failed retrievals, and the primary setting damaged one correct retrieval.
-See the [frozen protocol](./hopfield-benchmark/RELIABILITY_PROTOCOL.md) and
-[results with evidence](./hopfield-benchmark/RELIABILITY_RESULTS.md), including
-the failed small-dimension baseline and nearest-neighbor controls. This validates
-the new experiment only; it does not complete the cross-model or Colab UI checks above.
-
-### [`hopfield is all you need/`](./hopfield%20is%20all%20you%20need/)
-
-A Colab-ready experiment based on the MNIST-bags example from
-*Hopfield Networks is All You Need*. It retains the official experiment while
-using a current PyTorch implementation of the variable-length bag loader. The
-notebook uses the pipeline
-`CNN -> HopfieldPooling -> sigmoid` to classify a bag according to whether it
-contains a target digit.
-
-Run it directly in Colab:
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/hopfield%20is%20all%20you%20need/mnist_bags_hopfield_pooling_colab.ipynb)
-
-Recall degrades sharply around `n ≈ 15` (i.e. `n ≈ 0.15N`), consistent with the paper's reported capacity of `~0.15N` (later refined to the precise `~0.138N` by Amit, Gutfreund & Sompolinsky, 1985, via the replica method).
-
-### [`hopfield-fenchel-young/`](./hopfield-fenchel-young)
-
-A Colab-ready slice of the MNIST retrieval-capacity experiment (§7.3, Figure 11)
-from *Hopfield-Fenchel-Young Networks: A Unified Framework for Associative Memory
-Retrieval*. Compares Classic Hopfield (`tanh(β·W·Q)`), softmax (1-entmax), and
-sparsemax (2-entmax) readouts as the number of stored memories grows from 2 to
-4096, using the official success criterion (cosine similarity > 0.9). Uses the
-pure-PyTorch `entmax` package instead of the official repo's LP-SparseMAP
-dependency, which needs a local Eigen/Cython build.
-
-Run it directly in Colab:
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/hopfield-fenchel-young/hopfield_fenchel_young_capacity_colab.ipynb)
-
-Classic Hopfield collapses almost immediately (median success rate ~0.03 by
-n=8); softmax degrades gracefully at large n (~0.988 at n=4096); sparsemax
-stays pinned at 1.000 throughout. Section 6 of the notebook verifies this
-against the paper's margin theory (Proposition 9): sparsemax's exact-zero
-threshold behavior, not just a smaller β, is what makes it robust.
-
-Not yet covered: normmax, ℓ2/layer-normalization post-transformations,
-CIFAR10/Tiny ImageNet, β=1, and the official 5-step fixed-point iteration
-(this notebook does 1 step).
-
-### [`lap_associative_memory/`](./lap_associative_memory)
-
-Tests whether Locality–Autonomy Principle (LAP) regularization reduces
-non-descendant intervention leakage in a causal energy-based associative memory,
-and measures its cost in storage capacity and basin width. The experiment includes
-chain and confounded-fork SCM generators, a Modern Hopfield baseline, a node-wise
-E-SCM, mixed-Hessian LAP regularization, hard interventions, CSV checkpoints, and
-the four requested plots.
-
-Run the quick smoke grid or the multi-seed research grid in Colab:
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/lap_associative_memory/lap_associative_memory_colab.ipynb)
-
-The folder contains one self-contained Colab notebook: implementation, experiment
-configuration, evaluation, and plots are all embedded in it. Switch
-`FULL_EXPERIMENT` to `True` for the larger scan.
+打开任一链接后选择 **Runtime → Restart session and run all**。Notebook 会使用 Colab 预装环境；只有 Colab 缺少的依赖才会在首个环境单元安装。
