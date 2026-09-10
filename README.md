@@ -9,7 +9,8 @@ nn-labs/
 │   ├── benchmarks/      # 跨论文、同协议比较
 │   └── experiments/     # 论文之外的机制实验
 └── representation-geometry/  # 表征空间、神经流形与几何动力学
-    └── reproductions/
+    ├── reproductions/         # 单篇几何分析论文复现
+    └── experiments/           # 跨模型的表征几何机制实验
 ```
 
 ## Colab 入口
@@ -38,5 +39,9 @@ nn-labs/
 - [Static network](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/representation-geometry/reproductions/2025-dynamic-warping-neural-representations/reproduction/static_network_colab.ipynb)
 - [Evidence integration](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/representation-geometry/reproductions/2025-dynamic-warping-neural-representations/reproduction/evidence_integration_colab.ipynb)
 - [Working memory](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/representation-geometry/reproductions/2025-dynamic-warping-neural-representations/reproduction/wm_colab.ipynb)
+
+### Representation geometry：机制实验
+
+- [Hopfield pullback metric — experiment 0](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/representation-geometry/experiments/hopfield-dynamic-geometry/experiment_00_pullback_metric_colab.ipynb)
 
 打开任一链接后选择 **Runtime → Restart session and run all**。Notebook 会使用 Colab 预装环境；只有 Colab 缺少的依赖才会在首个环境单元安装。
