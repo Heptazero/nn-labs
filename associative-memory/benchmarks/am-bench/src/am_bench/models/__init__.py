@@ -5,6 +5,7 @@ from .dense import PolynomialDAM, ExponentialDAM
 from .simplicial import SimplicialR12
 from .pshn import PSHN
 from .modern import ContinuousModernHopfield
+from .spherical import SphericalPolynomialDAM
 from .base import RetrievalResult
 
 # [注册表] 主实验只通过工厂替换 b/d；a/c/e/f 代码完全复用

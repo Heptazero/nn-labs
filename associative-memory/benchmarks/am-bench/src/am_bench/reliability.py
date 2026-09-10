@@ -11,6 +11,7 @@ import torch
 
 from .models.modern import ContinuousModernHopfield
 from .provenance import source_info
+from .state_spaces import project_to_tangent, spherical_geodesic
 from .storage import BatchStore, atomic_json, fingerprint
 
 
@@ -116,20 +117,19 @@ def c2_make_directions(model, cues, base_ids, method, count, seed):
         axes = random_axes
     else:
         raise ValueError(method)
-    radial = torch.nn.functional.normalize(cues, dim=-1)[:, None, :]
-    tangent = axes - (axes * radial).sum(dim=-1, keepdim=True) * radial
+    tangent = project_to_tangent(cues, axes)
     degenerate = torch.linalg.vector_norm(tangent, dim=-1) < 1e-12
-    fallback = random_axes - (random_axes * radial).sum(dim=-1, keepdim=True) * radial
+    fallback = project_to_tangent(cues, random_axes)
     tangent = torch.where(degenerate[..., None], fallback, tangent)
     return torch.nn.functional.normalize(tangent, dim=-1), degenerate.sum(dim=-1)
 
 
 def c3_spherical_probes(cues, axes, angle):
     """[干预] 正负各走 angle 弧度；输出 (B,2K,N)，范数与原查询一致。"""
-    radius = torch.linalg.vector_norm(cues, dim=-1)[:, None, None]
-    center = math.cos(angle) * cues[:, None, :]
-    shift = math.sin(angle) * radius * axes
-    return torch.cat([center + shift, center - shift], dim=1)
+    return torch.cat([
+        spherical_geodesic(cues, axes, angle),
+        spherical_geodesic(cues, axes, -angle),
+    ], dim=1)
 
 
 def d2_majority_repair(base_ids, probe_ids, P):
