@@ -66,6 +66,16 @@ See the [13-question inventory](./hopfield-benchmark/QUESTIONS.md) for coverage
 and remaining work. Static and checkpoint-storage checks passed; numerical
 parity and Colab execution remain pending. No cross-model result is claimed.
 
+The separate [query-probe reliability notebook](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/hopfield-benchmark/retrieval_reliability.ipynb)
+tests fixed modern Hopfield retrieval with guided, random, and shuffled query
+perturbations. It retains the a/b/c/d/e/f pipeline and Chinese annotations/font
+setup. The full synthetic grid was executed locally: majority voting rescued
+no failed retrievals, and the primary setting damaged one correct retrieval.
+See the [frozen protocol](./hopfield-benchmark/RELIABILITY_PROTOCOL.md) and
+[results with evidence](./hopfield-benchmark/RELIABILITY_RESULTS.md), including
+the failed small-dimension baseline and nearest-neighbor controls. This validates
+the new experiment only; it does not complete the cross-model or Colab UI checks above.
+
 ### [`hopfield is all you need/`](./hopfield%20is%20all%20you%20need/)
 
 A Colab-ready experiment based on the MNIST-bags example from
