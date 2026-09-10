@@ -1,0 +1,30 @@
+{
+  "passed_boundary_tracking": true,
+  "supports_independent_G_value": false,
+  "valid_topology_fraction": 1.0,
+  "boundary_moves_in_expected_direction": true,
+  "boundary_kappa_median_by_delta": {
+    "-0.30": 0.44274756786762737,
+    "-0.15": 0.4733209049736615,
+    "+0.00": 0.5,
+    "+0.15": 0.5266790950263385,
+    "+0.30": 0.5572524321323726
+  },
+  "metric_identifiable_fraction_after_start": 1.0,
+  "metric_median_error_after_start": 0.0011576413082636239,
+  "metric_p90_error_after_start": 0.0016686923859539071,
+  "moving_boundary_median_error_after_start": {
+    "energy_ridge": 0.005533322091256454,
+    "overlap_zero": 0.0011164631462277363,
+    "pullback_G": 0.001282142508898021
+  },
+  "moving_boundary_median_first_sustained_time": {
+    "energy_ridge": 0.0,
+    "overlap_zero": 0.55,
+    "pullback_G": 0.75
+  },
+  "G_more_accurate_than_both_baselines": false,
+  "G_earlier_than_both_baselines": false,
+  "max_endpoint_speed": 4.299875284949258e-14,
+  "min_endpoint_margin_magnitude": 0.6599061105548832
+}

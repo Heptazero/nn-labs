@@ -1,0 +1,46 @@
+{
+  "N": 60,
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "requested_overlaps": [
+    0.0
+  ],
+  "gain": 4.0,
+  "dt": 0.02,
+  "metric_steps": 300,
+  "boundary_steps": 4800,
+  "kappa_min": 0.0,
+  "kappa_max": 1.0,
+  "kappa_points": 201,
+  "boundary_tolerance": 1e-10,
+  "boundary_margin_tolerance": 1e-10,
+  "boundary_max_iterations": 60,
+  "endpoint_speed_tolerance": 1e-06,
+  "endpoint_margin_minimum": 0.01,
+  "flat_relative_tolerance": 1e-10,
+  "identifiable_contrast": 1.1,
+  "evaluation_start_time": 2.0,
+  "median_error_tolerance": 0.01,
+  "p90_error_tolerance": 0.025,
+  "required_identifiable_fraction": 0.9,
+  "representative_seed": 0,
+  "representative_overlap": 0.5,
+  "deltas": [
+    -0.3,
+    -0.15,
+    0.0,
+    0.15,
+    0.3
+  ],
+  "topology_points": 101,
+  "estimator_error_tolerance": 0.01,
+  "representative_delta": 0.3
+}
