@@ -6,7 +6,7 @@
   "moving_boundary_median_angle_after_start_deg": {
     "energy_ridge_normal": 2.007946463161188,
     "overlap_normal": 1.5430368012231368,
-    "pullback_G": 0.1090218867443366
+    "pullback_G": 0.10902188674433665
   },
   "moving_boundary_p90_angle_after_start_deg": {
     "energy_ridge_normal": 5.020181427981804,
@@ -32,7 +32,7 @@
   },
   "G_more_accurate_by_practical_margin": true,
   "G_earlier_than_both_baselines": false,
-  "max_endpoint_speed": 3.317451997298471e-10,
+  "max_endpoint_speed": 3.3174519972984714e-10,
   "min_endpoint_margin_magnitude": 0.6599061105907054,
-  "median_boundary_curve_range": 0.0453757341310847
+  "median_boundary_curve_range": 0.045375734131084755
 }

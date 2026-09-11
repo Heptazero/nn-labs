@@ -45,5 +45,6 @@ nn-labs/
 - [Hopfield pullback metric — experiment 0](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/representation-geometry/experiments/hopfield-dynamic-geometry/experiment_00_pullback_metric_colab.ipynb)
 - [Hopfield boundary localization — experiment 1](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/representation-geometry/experiments/hopfield-dynamic-geometry/experiment_01_boundary_localization_colab.ipynb)
 - [Hopfield moving boundary — experiment 2](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/representation-geometry/experiments/hopfield-dynamic-geometry/experiment_02_moving_boundary_colab.ipynb)
+- [Hopfield 2D directional geometry — experiment 3](https://colab.research.google.com/github/Heptazero/nn-labs/blob/main/representation-geometry/experiments/hopfield-dynamic-geometry/experiment_03_2d_directional_geometry_colab.ipynb)
 
 打开任一链接后选择 **Runtime → Restart session and run all**。Notebook 会使用 Colab 预装环境；只有 Colab 缺少的依赖才会在首个环境单元安装。
