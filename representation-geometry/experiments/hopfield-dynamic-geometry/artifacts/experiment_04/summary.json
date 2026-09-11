@@ -1,0 +1,54 @@
+{
+  "mechanism_outcome": "same_location_controls_remove_G_advantage",
+  "valid_topology_fraction": 1.0,
+  "moving_boundary_median_angle_after_start_deg": {
+    "instantaneous_strain_S0": 4.0045667830448215,
+    "pullback_G": 0.1090218867443366,
+    "same_point_energy_hessian": 0.10899131634443471,
+    "same_point_overlap_gradient": 0.10900072534701566,
+    "time_varying_strain_St": 0.1089938790812142
+  },
+  "moving_boundary_p90_angle_after_start_deg": {
+    "instantaneous_strain_S0": 5.383699290691762,
+    "pullback_G": 0.2550262365237049,
+    "same_point_energy_hessian": 0.2549220053057343,
+    "same_point_overlap_gradient": 0.2549220091809744,
+    "time_varying_strain_St": 0.2549635238517969
+  },
+  "moving_boundary_coverage_after_start": {
+    "instantaneous_strain_S0": 1.0,
+    "pullback_G": 1.0,
+    "same_point_energy_hessian": 1.0,
+    "same_point_overlap_gradient": 1.0,
+    "time_varying_strain_St": 1.0
+  },
+  "paired_seed_angle_gain_over_G_deg": {
+    "same_point_overlap_gradient": {
+      "median": -1.446868419824332e-06,
+      "ci95_low": -3.1890489516905873e-06,
+      "ci95_high": 5.623741811539018e-07
+    },
+    "same_point_energy_hessian": {
+      "median": -4.365720592300337e-06,
+      "ci95_low": -1.9293936872638584e-05,
+      "ci95_high": -2.3186737010405523e-06
+    },
+    "instantaneous_strain_S0": {
+      "median": 4.04395322323805,
+      "ci95_low": 3.4524098455072623,
+      "ci95_high": 4.361139137335205
+    },
+    "time_varying_strain_St": {
+      "median": 6.798489194936863e-07,
+      "ci95_low": -6.922935242403838e-06,
+      "ci95_high": 1.268250290648032e-06
+    }
+  },
+  "G_beats_same_point_overlap_and_energy_by_margin": false,
+  "G_beats_initial_strain_S0_by_margin": true,
+  "early_mechanism_time": 0.02,
+  "median_G_vs_S0_angle_at_early_time_deg": 0.10422616020769065,
+  "median_G_linearization_relative_error_at_early_time": 0.03309615612991865,
+  "max_endpoint_speed": 3.317451997298471e-10,
+  "min_endpoint_margin_magnitude": 0.6599061105907054
+}
