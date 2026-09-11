@@ -1,0 +1,38 @@
+{
+  "passed_directional_geometry": true,
+  "supports_independent_directional_G_value": true,
+  "valid_topology_fraction": 1.0,
+  "G_direction_coverage_after_start": 1.0,
+  "moving_boundary_median_angle_after_start_deg": {
+    "energy_ridge_normal": 2.007946463161188,
+    "overlap_normal": 1.5430368012231368,
+    "pullback_G": 0.1090218867443366
+  },
+  "moving_boundary_p90_angle_after_start_deg": {
+    "energy_ridge_normal": 5.020181427981804,
+    "overlap_normal": 4.113812159815806,
+    "pullback_G": 0.2550262365237049
+  },
+  "moving_boundary_median_first_sustained_time": {
+    "energy_ridge_normal": 0.0,
+    "overlap_normal": 0.5800000000000001,
+    "pullback_G": 0.02
+  },
+  "paired_seed_angle_gain_over_G_deg": {
+    "overlap_normal": {
+      "median": 1.3331344615739504,
+      "ci95_low": 1.2112909328807282,
+      "ci95_high": 1.6728998046388321
+    },
+    "energy_ridge_normal": {
+      "median": 1.8440078088613054,
+      "ci95_low": 1.6897651380774321,
+      "ci95_high": 2.161597837989002
+    }
+  },
+  "G_more_accurate_by_practical_margin": true,
+  "G_earlier_than_both_baselines": false,
+  "max_endpoint_speed": 3.317451997298471e-10,
+  "min_endpoint_margin_magnitude": 0.6599061105907054,
+  "median_boundary_curve_range": 0.0453757341310847
+}
