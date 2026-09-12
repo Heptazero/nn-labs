@@ -53,24 +53,27 @@ X[\operatorname{Diag}(p)-pp^\top]X^\top.
 若以后加入 residual、normalization，或使 `rank(X)=N`，必须另立实验，
 不能沿用这条结构投影结论。
 
-## 3. 两个独立的正式问题
+## 3. 一个主问题与一个条件性问题
 
 ### 05A：变体差异
 
 > 在匹配第一步竞争锐度后，softmax 与 sparsemax 的 memory-span Jacobian
 > 有效秩轨迹是否仍有至少一步的稳定差异？
 
-这是第一道生死门。一次运行只检验这个问题，不使用终态类别挑选条件或
-图册。
+这是第一道生死门，也是实验 05 唯一的确认性主问题。一次运行只检验这个
+问题，不使用终态类别挑选条件或图册。
 
 ### 05B：结局预测
 
-只有 05A 通过，才检验：
+只有 05A 通过且冻结数据中具有足够的正确与非正确结局，才检验：
 
 > 秩坍缩时序能否在 entropy、IPR、support、score gap 和检索速度之外，
-> 提前预测正确、错误、混合或其他稳定伪吸引子？
+> 提前预测正确与非正确结局；若类别覆盖允许，能否进一步区分错误记忆与
+> 稳定混合态？
 
 05B 使用 05A 已冻结的轨迹，不为提高 AUC 修改锐度、seed、阈值或标签。
+若类别覆盖不足，则记录为 `not_testable`，不临时增加相关记忆或挑选失败
+cue；相关记忆与真实图片另立实验 06。
 
 ## 4. 数据与预算
 
@@ -82,41 +85,49 @@ X[\operatorname{Diag}(p)-pp^\top]X^\top.
 - 每个目标 2 个 corruption mask；
 - 只用于检查速度、数值恒等式和类别覆盖，不形成研究结论。
 
-### 正式运行
+### 正式运行：先廉价校准，再计算 Jacobian
 
 - `N=128, K=100`；独立 Rademacher 记忆；
 - memory seeds `0..7`，seed 是统计独立单位；
-- 所有 100 条记忆都轮流作为目标；
 - Hamming corruption `rho in {0.10, 0.25, 0.40}`；
-- Jacobian 轨迹对每个 `seed × target × rho` 使用一个由三者唯一确定的
-  corruption mask；
-- 表示秩另用每个目标 8 个固定 mask，只做前向迭代；
-- `alpha in {0.5, 1, 2, 4, 8}`；
-- Jacobian 记录 `t=0..6`；结局判定最多迭代 100 步；
-- float64；矩阵分块计算，不保存每个 cue 的完整 Jacobian，只保存谱、
-  迹和可复算所需的 seed/config。
+- 第一阶段只做前向校准：所有 100 条记忆都轮流作为目标，在开发预跑冻结
+  的稠密 `alpha` 网格上记录第一步 IPR、support、success 和结局；
+- 稠密网格初始候选为
+  `alpha in {0.25,0.5,0.75,1,1.5,2,3,4,6,8,12}`；若开发 seed 显示共同
+  IPR 覆盖不足，只能在正式 seed 开始前一次性扩展并写入 `protocol.json`；
+- 第二阶段才计算 Jacobian：每个 memory seed 用
+  `jacobian_target_seed=8000+memory_seed` 预抽 32 个目标，每个
+  `target × rho` 使用一个由三者唯一确定的 corruption mask；
+- 表示秩仍覆盖全部 100 个目标，每个目标 8 个固定 mask，但只做前向迭代；
+- 局部与累计 Jacobian 记录 `t=0..12`；结局判定最多迭代 100 步；
+- float64；在 memory-span 坐标中分块计算，不保存每个 cue 的完整 Jacobian，
+  只保存谱、迹和可复算所需的 seed/config。
 
-原始 `alpha` 扫描是描述性结果。主要 softmax/sparsemax 比较使用 5-fold
-target cross-fitting：在其余四折上选择使第一步 attention IPR 最接近的
-`alpha`，在留出折评估。这样所有目标都被评估一次，匹配过程看不到留出
-目标的结局。无法达到共同 IPR 范围的条件标为 `unmatched`，不外推。
+原始同 `alpha` 扫描回答“相同 logits 尺度下变体怎样不同”，是描述性结果。
+确认性比较回答“匹配初始竞争集中度后是否仍不同”：先用开发 seed 在两种
+方法共同覆盖的第一步 median IPR 区间内冻结 3 个对数等距 IPR 水平；正式
+seed 内只用其余目标选择距离每个水平最近的 alpha，再在留出目标评估。
+匹配后 median IPR 相对误差超过 5% 的条件标为 `unmatched`，不外推。
 
 检索质量匹配只作为敏感性分析：只在两种方法实际成功率重叠的区间内
 比较，不通过插值制造不存在的工作点。
 
 ## 5. 完整谱与秩指标
 
-令
+必须同时区分一步局部 Jacobian 与从初态累计到当前步的 Jacobian。令
 
 \[
-J_t=\frac{\partial x_t}{\partial x_0},\qquad G_t=J_t^\top J_t.
+A_t=D F(x_t),\qquad
+J_t=\frac{\partial x_t}{\partial x_0}=A_{t-1}\cdots A_0,
+\qquad G_t=J_t^\top J_t.
 \]
 
-对 \(t\ge1\)，用 `X=QR` 的正交基 \(Q\) 把计算精确限制在
+`A_t` 回答“当前这一步保留多少方向”，`J_t`/`G_t` 回答“初态信息至今还
+剩多少方向”。对 \(t\ge1\)，用 `X=QR` 的正交基 \(Q\) 把计算精确限制在
 \(\mathrm{span}(X)\)；这只是去掉已知的零正交补，不做降维近似。每个
 cue、每步保存：
 
-- \(G_t\) 的全部非负特征值；
+- 局部 `A_t^T A_t` 与累计 \(G_t\) 的全部非负特征值；
 - `trace_G = tr(G_t)`；
 - `spectral_G = lambda_max(G_t)`；
 - `effective_rank = exp(H(lambda / sum(lambda)))`；
@@ -129,9 +140,20 @@ effective rank 与 stable rank 都以 \(G\) 的特征值定义，不混用
 \(J\) 的奇异值归一化。若 `trace_G` 低于 `1e-14 * trace_G(t=1)`，方向秩
 记为 `sensitivity_extinct`，不把浮点噪声解释为剩余方向。
 
-`t50`、`t10` 从 `t=1` 开始，定义为 effective rank 相对 `t=1` 首次降到
-50%/10%，并在后续记录时刻持续不反弹的最早步。未达到时删失，不填成
-最大步数。sparsemax 另记 support 首次持续变为 1 的步数。
+对累计谱定义方向存活率
+
+\[
+d_t=\frac{r_{eff}(t)-1}{r_{eff}(1)-1}.
+\]
+
+若 `r_eff(t=1)-1 <= 1e-8`，该轨迹记为 `collapsed_at_entry` 并令后续
+`d_t=0`，不执行除法。
+
+灵敏度灭绝后令 `d_t=0`，同时单独报告 `trace_G`，避免把方向减少与幅度
+消失混成同一结论。主要轨迹摘要为 `dimension_auc = mean(d_t, t=1..12)`。
+`t50`、`t10` 是次要指标，定义为 `d_t` 首次降到 50%/10% 且在余下记录
+时刻不反弹的最早步；未达到时删失。sparsemax 另记局部 support 首次持续
+变为 1 的步数。
 
 ## 6. 表示秩
 
@@ -169,13 +191,18 @@ G_{atlas,w}=B_w^\top G_{full}B_w.
 anchor 在 barycentric 图上的位置保持 `(0,0),(1,0),(0,1)`。不能直接把
 `B` 换成 QR 的 `Q` 后仍沿用原三角形坐标。
 
-每个图册输出固定时间切片 `t in {0,1,2,4,6}`：变形网格、metric
+每个图册使用每边 41 点的三角网格，输出固定时间切片
+`t in {0,1,2,4,8,12}`：变形网格、metric
 ellipse、`sqrt(det G)`、有效秩、各向异性和终态颜色。PCA 只展示状态像的
 外在形状；PCA 从 \(X\) 拟合一次并跨方法、锐度和时间共用。另报告
 
 \[
-\mathrm{fidelity}=\|U_2^\top B_w\|_F^2/2.
+\mathrm{fidelity}=\|U_3^\top B_w\|_F^2/2,
 \]
+
+其中 `U_3` 是用于三维状态图的三个固定 PC。主图预注册为
+`memory_seed=0`、anchor 0 的近邻/远邻图册，不允许按结果换图；其余图册
+只进入汇总与补充材料。
 
 瞬时 `G_full(t)` 前两个特征向量只作为最强方向诊断，不称为跨时间图册。
 
@@ -204,18 +231,19 @@ softmax 与 sparsemax 都是连续映射，所以有限步的连通三角形之�
 连续三步成立；100 步未满足则为 `unconverged`。收敛点还要检查局部
 Jacobian 谱半径小于 `1-1e-6`，否则不能称为稳定吸引子。
 
-正式类别为：
+现代 Hopfield 的任何读出都位于记忆凸包中，因此没有额外机制时，“稳定
+混合态”与“其他伪吸引子”不能靠命名强行分开。确认性类别收窄为：
 
-1. `correct_memory`；
-2. `other_stored_memory`；
-3. `mixture`；
-4. `other_stable_pseudo_attractor`；
-5. `unconverged`。
+1. `correct_memory_like`；
+2. `other_stored_memory_like`；
+3. `stable_mixture`；
+4. `unconverged_or_unstable`。
 
-stored-memory、mixture 和 endpoint clustering 的数值阈值只允许在开发
+stored-memory-like、mixture 和 endpoint clustering 的数值阈值只允许在开发
 预跑中根据固定点误差与数值精度冻结，不能根据哪种定义更有利于秩指标来
-选择。未通过稳定性检查的收敛候选单列 `nonstable_fixed_candidate`，不塞进
-伪吸引子类别。
+选择。稳定但不能归入前三类的候选记为 `unresolved_stable_endpoint`，只做
+探索性聚类，不在实验 05 中宣称发现新的伪吸引子。未通过稳定性检查的
+收敛候选单列 `nonstable_fixed_candidate`。
 
 ## 10. 数值自检
 
@@ -231,13 +259,16 @@ stored-memory、mixture 和 endpoint clustering 的数值阈值只允许在开�
    微分一致；支持墙上的不可微点不用于该恒等式；
 6. 所有保存的 \(G\) 特征值在容差内非负；NaN、溢出或未匹配工作点必须
    显式保存状态。
+7. 累计 Jacobian 递推满足 `J_(t+1)=A_t J_t`，并与直接对 `F^t` 自动微分
+   一致；开发预跑相对误差阈值 `1e-8`。
 
 ## 11. 停止门
 
 ### 05A
 
-- 主要效应：匹配第一步 IPR 后，softmax 与 sparsemax 的 `t50` 或 `t10`
-  配对 seed 差异中位数至少 1 步，95% bootstrap CI 不跨 0；
+- 主要效应：匹配第一步 IPR 后，softmax 与 sparsemax 的
+  `dimension_auc` 配对 seed 差异绝对值至少 `0.10`，95% bootstrap CI
+  不跨 0；`t50/t10` 与局部谱只负责解释差异发生在哪一步；
 - 若曲线不分，停止“变体几何”路线；
 - 若差异与 support/entropy/gap 的确定性变化完全同步，只保留为已知稀疏
   竞争机制的几何表达，不宣称新机制。
@@ -245,7 +276,9 @@ stored-memory、mixture 和 endpoint clustering 的数值阈值只允许在开�
 ### 05B
 
 - 以 memory seed 分组做 leave-one-seed-out；
-- 基线只用早期 entropy、IPR、support、gap、状态步长和最终前可获得的
+- 首先预测 `correct` 与 `non-correct`；只有每个细分类至少出现在 2 个独立
+  seed 中，才报告细分类宏平均 AUC；
+- 基线只用早期 entropy、IPR、support、gap、状态步长和预测时刻前可获得的
   overlap margin；
 - 加入早期 rank trajectory 后，宏平均 AUC 至少提高 `0.03`，配对 seed
   bootstrap CI 下界大于 0；
