@@ -1,0 +1,8 @@
+check,error,tolerance,passed
+atlas_t0_whitened_identity,3.0094327644061055e-16,1e-10,True
+atlas_AD_equals_full_projection,1.9294995532093824e-16,1e-08,True
+ritz_upper_bound,0.0,1e-10,True
+orthogonal_complement_annihilated,3.103252600118955e-16,1e-10,True
+analytic_transform_jacobians,4.292498725706442e-16,1e-08,True
+gram_spectrum_finite_and_psd,3.326145962051291e-19,1e-10,True
+cumulative_recurrence_and_reduced_basis,1.0806404359165071e-15,1e-08,True

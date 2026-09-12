@@ -18,6 +18,12 @@ pullback-metric analysis to Hopfield retrieval dynamics.
   direction at the same true-boundary point and compares finite-time pullback
   geometry with the overlap gradient, the energy Hessian, initial strain `S0`,
   and time-varying strain `St`. Frozen outputs live in `artifacts/experiment_04/`.
+- `experiment_05_multimemory_rank_collapse.py`: development core for matched-IPR
+  softmax/sparsemax retrieval with the complete memory bank, exact memory-span
+  local and cumulative Jacobian spectra, seven numerical checks, and explicit
+  censoring/saturation audits. Development-only outputs live in
+  `artifacts/experiment_05/development/`; they are readiness evidence, not the
+  confirmatory 05A result.
 
 These notebooks are method checks, not reproductions of the RNN dynamic-warping
 paper and not evidence of a new Hopfield result. Experiment 1 uses its own JAX
