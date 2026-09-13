@@ -1,0 +1,38 @@
+{
+  "status": "exploratory_05R_method_pilot",
+  "confirmatory_claim_allowed": false,
+  "expected_pair_count": 2304,
+  "included_pair_count": 2304,
+  "pair_attainability_fraction": 1.0,
+  "pair_status_counts": {
+    "matched": 2304
+  },
+  "maximum_target_ipr_relative_error": 5.10702591327572e-15,
+  "maximum_method_pair_ipr_relative_error": 4.662936703425645e-15,
+  "all_seed_self_checks_passed": true,
+  "self_check_count": 56,
+  "expected_rank_rows_for_included_pairs": 59904,
+  "actual_rank_rows": 59904,
+  "unexpected_nonfinite_after_entry": 0,
+  "mean_C": 0.03415532348947235,
+  "pair_attainability_gate_passed": true,
+  "ipr_match_gate_passed": true,
+  "numerical_gate_passed": true,
+  "interaction_signal_gate_passed": false,
+  "interaction_signal_absolute_threshold": 0.05,
+  "stopping_outcome": "stop_interaction_signal_below_0.05",
+  "experiment_06_allowed": false,
+  "05B_allowed": false,
+  "atlas_allowed": false,
+  "descriptive_bootstrap_95_ci": [
+    0.022240393064660947,
+    0.044565950546416246
+  ],
+  "runtime_seconds": 60.75207220797893,
+  "jacobian_runtime_seconds": 47.08165012599784,
+  "execution_environment": "local_cpu",
+  "device": "cpu",
+  "torch_version": "2.14.0",
+  "protocol_sha256": "aa6563e893889fc251e75cbbcf29c34dc069006296f3a6b9dc932f930f1ed7d8",
+  "source_sha256": "c0192a73bcf902504c243307bd1989378a4ea17d8fdcaf0661bb330b393b443f"
+}

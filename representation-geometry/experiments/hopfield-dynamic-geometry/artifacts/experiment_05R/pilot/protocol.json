@@ -1,0 +1,51 @@
+{
+  "config": {
+    "N": 128,
+    "K": 100,
+    "memory_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "corruption_rates": [
+      0.1,
+      0.25,
+      0.4
+    ],
+    "targets_per_seed": 32,
+    "mask_count": 1,
+    "target_iprs": [
+      4.0,
+      16.0,
+      64.0
+    ],
+    "jacobian_steps": 12,
+    "alpha_bracket_start": 1.0,
+    "alpha_max": 1048576.0,
+    "bisection_steps": 80,
+    "target_ipr_relative_tolerance": 0.005,
+    "pair_ipr_relative_tolerance": 0.005,
+    "monotonicity_tolerance": 1e-10,
+    "monotonicity_samples": 65,
+    "tie_tolerance": 1e-12,
+    "pair_attainability_threshold": 0.95,
+    "interaction_signal_threshold": 0.05,
+    "bootstrap_samples": 10000,
+    "bootstrap_seed": 50500,
+    "target_seed_offset": 8000,
+    "corruption_seed_offset": 20000,
+    "support_tolerance": 1e-12,
+    "numeric_rank_relative_tolerance": 1e-10,
+    "sensitivity_extinction_relative_tolerance": 1e-14,
+    "collapsed_at_entry_tolerance": 1e-08,
+    "dtype": "float64"
+  },
+  "protocol_sha256": "aa6563e893889fc251e75cbbcf29c34dc069006296f3a6b9dc932f930f1ed7d8",
+  "old_seeds_exploratory_only": true,
+  "confirmatory_claim_allowed": false
+}

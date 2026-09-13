@@ -32,7 +32,10 @@ pullback-metric analysis to Hopfield retrieval dynamics.
   softmax and sparsemax sharpness for every old-seed cue at IPR 4, 16, and 64,
   applies symmetric censoring, and asks whether the middle-regime dimension-AUC
   difference exceeds the two endpoints. The old seeds can only open or stop a
-  new-seed experiment 06; they cannot revise experiment 05A.
+  new-seed experiment 06; they cannot revise experiment 05A. Its frozen pilot
+  outputs live in `artifacts/experiment_05R/pilot/`: all method and numerical
+  checks passed, but mean interaction `C=0.0342` missed the preregistered `0.05`
+  signal gate, so experiment 06 was not opened.
 
 These notebooks are method checks, not reproductions of the RNN dynamic-warping
 paper and not evidence of a new Hopfield result. Experiment 1 uses its own JAX
