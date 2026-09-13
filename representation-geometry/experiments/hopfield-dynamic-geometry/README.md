@@ -23,7 +23,10 @@ pullback-metric analysis to Hopfield retrieval dynamics.
   memory-span local and cumulative Jacobian spectra, seven numerical checks, and
   explicit censoring/saturation audits. Development-only outputs live in
   `artifacts/experiment_05/development/`; they are readiness evidence, not the
-  confirmatory 05A result.
+  confirmatory 05A result. The frozen 8-seed attempt lives in
+  `artifacts/experiment_05/formal/`: 12 of 72 seed-by-condition pairs failed the
+  preregistered 5% held-out IPR match, so 05A is recorded as not testable and
+  05B was not run.
 
 These notebooks are method checks, not reproductions of the RNN dynamic-warping
 paper and not evidence of a new Hopfield result. Experiment 1 uses its own JAX

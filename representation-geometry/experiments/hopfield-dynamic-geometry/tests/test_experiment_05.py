@@ -25,7 +25,9 @@ from experiment_05_multimemory_rank_collapse import (
     make_memories,
     memory_span_basis,
     rank_trajectory,
+    representation_rank_trajectory,
     run_numerical_self_checks,
+    select_formal_alphas,
     spectrum_metrics,
 )
 
@@ -42,6 +44,8 @@ class RankCollapseTests(unittest.TestCase):
             endpoint_steps=10,
             development_targets=4,
             development_masks=1,
+            formal_jacobian_targets=4,
+            formal_representation_masks=2,
         )
         self.X = make_memories(self.config, 0)
         self.Q, self.C = memory_span_basis(self.X)
@@ -184,6 +188,58 @@ class RankCollapseTests(unittest.TestCase):
         self.assertEqual(summary["unexpected_dimension_survival_nan_count"], 0)
         self.assertEqual(summary["actual_rank_rows"], summary["expected_rank_rows"])
         self.assertEqual(len(audit), 6)
+
+    def test_formal_alpha_selection_uses_training_then_checks_heldout(self):
+        rows = []
+        frozen_rows = []
+        target_iprs = {"low": 1.0, "middle": 2.0, "high": 4.0}
+        for method in ("softmax", "sparsemax"):
+            for level, target_ipr in target_iprs.items():
+                frozen_rows.append({
+                    "rho": 0.10, "level": level, "method": method,
+                    "target_ipr": target_ipr,
+                })
+            for target in range(4):
+                for alpha, ipr in zip((1.0, 2.0, 3.0), (1.0, 2.0, 4.0)):
+                    rows.append({
+                        "target": target, "rho": 0.10, "method": method,
+                        "alpha": alpha, "first_ipr": ipr,
+                    })
+        selected = select_formal_alphas(
+            pd.DataFrame(rows), pd.DataFrame(frozen_rows), np.array([0]),
+            self.config, memory_seed=0,
+        )
+        self.assertTrue(bool(selected.matched.all()))
+        self.assertEqual(set(selected.alpha), {1.0, 2.0, 3.0})
+        self.assertTrue(bool((selected.heldout_pair_relative_error == 0).all()))
+
+        bad = pd.DataFrame(rows)
+        bad.loc[
+            (bad.method == "softmax") & (bad.alpha == 3.0), "first_ipr"
+        ] = 3.0
+        rejected = select_formal_alphas(
+            bad, pd.DataFrame(frozen_rows), np.array([0]),
+            self.config, memory_seed=0,
+        )
+        high = rejected[rejected.level == "high"]
+        self.assertFalse(bool(high.matched.any()))
+
+    def test_representation_rank_keeps_within_and_between_separate(self):
+        from experiment_05_multimemory_rank_collapse import make_cues_for_targets
+
+        full_cues, _ = make_cues_for_targets(
+            self.X, self.config, 0, np.arange(self.config.K),
+            self.config.formal_representation_masks,
+        )
+        frame = representation_rank_trajectory(
+            full_cues, self.X, 1.5, "softmax", self.config
+        )
+        expected = (self.config.K + 1) * (self.config.jacobian_steps + 1)
+        self.assertEqual(len(frame), expected)
+        self.assertEqual(
+            len(frame[frame.scope == "between_target"]),
+            self.config.jacobian_steps + 1,
+        )
 
     def test_all_seven_numerical_checks_pass(self):
         checks = run_numerical_self_checks(

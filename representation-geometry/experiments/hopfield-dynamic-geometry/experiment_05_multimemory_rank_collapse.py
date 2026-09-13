@@ -55,6 +55,11 @@ class RankCollapseConfig:
     development_seed: int = 0
     development_targets: int = 12
     development_masks: int = 2
+    formal_jacobian_targets: int = 32
+    formal_representation_masks: int = 8
+    bootstrap_samples: int = 10_000
+    bootstrap_seed: int = 50_005
+    dimension_auc_practical_threshold: float = 0.10
     target_seed_offset: int = 8_000
     corruption_seed_offset: int = 20_000
     atlas_seed_offset: int = 9_000
@@ -77,6 +82,12 @@ class RankCollapseConfig:
             raise ValueError("iteration budgets are invalid")
         if self.development_targets > self.K or self.development_targets < 3:
             raise ValueError("invalid development target count")
+        if not 3 <= self.formal_jacobian_targets < self.K:
+            raise ValueError("formal Jacobian targets must leave calibration targets")
+        if self.formal_representation_masks < 2:
+            raise ValueError("representation rank needs at least two masks")
+        if self.bootstrap_samples < 1_000:
+            raise ValueError("bootstrap budget is too small")
         if self.development_masks < 1 or self.matched_ipr_levels != 3:
             raise ValueError("development masks and three IPR levels are required")
         if not 0 < self.memory_like_attention < 1:
@@ -148,6 +159,41 @@ def make_development_cues(
     for rho in config.corruption_rates:
         for target in targets:
             for mask_index in range(config.development_masks):
+                cues.append(make_corrupted_cue(
+                    X, int(target), rho, mask_index, config, memory_seed
+                ))
+                rows.append({
+                    "cue_index": cue_index,
+                    "memory_seed": memory_seed,
+                    "target": int(target),
+                    "rho": rho,
+                    "mask_index": mask_index,
+                })
+                cue_index += 1
+    return torch.stack(cues), pd.DataFrame(rows)
+
+
+def select_formal_targets(config: RankCollapseConfig, seed: int) -> np.ndarray:
+    generator = np.random.default_rng(config.target_seed_offset + seed)
+    return np.sort(generator.choice(
+        config.K, size=config.formal_jacobian_targets, replace=False
+    ))
+
+
+def make_cues_for_targets(
+    X: torch.Tensor,
+    config: RankCollapseConfig,
+    memory_seed: int,
+    targets: np.ndarray,
+    mask_count: int,
+) -> tuple[torch.Tensor, pd.DataFrame]:
+    """为给定目标、rho 与 mask 生成固定、可复算的查询。"""
+    rows = []
+    cues = []
+    cue_index = 0
+    for rho in config.corruption_rates:
+        for target in targets:
+            for mask_index in range(mask_count):
                 cues.append(make_corrupted_cue(
                     X, int(target), rho, mask_index, config, memory_seed
                 ))
@@ -668,6 +714,95 @@ def choose_matched_ipr_levels(
     return pd.DataFrame(level_rows), pd.DataFrame(range_rows)
 
 
+def select_formal_alphas(
+    calibration: pd.DataFrame,
+    frozen_levels: pd.DataFrame,
+    heldout_targets: np.ndarray,
+    config: RankCollapseConfig,
+    memory_seed: int,
+) -> pd.DataFrame:
+    """只用非留出目标选 alpha，再在预注册留出目标上检查 IPR 匹配。"""
+    is_heldout = calibration.target.isin(set(map(int, heldout_targets)))
+    training = calibration[~is_heldout]
+    heldout = calibration[is_heldout]
+    training_summary = (
+        training.groupby(["rho", "method", "alpha"])
+        .first_ipr.median().rename("training_median_ipr").reset_index()
+    )
+    heldout_summary = (
+        heldout.groupby(["rho", "method", "alpha"])
+        .first_ipr.median().rename("heldout_median_ipr").reset_index()
+    )
+    rows = []
+    for frozen in frozen_levels.itertuples():
+        curve = training_summary[
+            np.isclose(training_summary.rho, frozen.rho)
+            & (training_summary.method == frozen.method)
+        ]
+        index = (curve.training_median_ipr - frozen.target_ipr).abs().idxmin()
+        selected = curve.loc[index]
+        heldout_row = heldout_summary[
+            np.isclose(heldout_summary.rho, frozen.rho)
+            & (heldout_summary.method == frozen.method)
+            & np.isclose(heldout_summary.alpha, selected.alpha)
+        ].iloc[0]
+        rows.append({
+            "memory_seed": memory_seed,
+            "rho": float(frozen.rho),
+            "level": frozen.level,
+            "method": frozen.method,
+            "target_ipr": float(frozen.target_ipr),
+            "alpha": float(selected.alpha),
+            "training_median_ipr": float(selected.training_median_ipr),
+            "training_relative_error": float(
+                abs(selected.training_median_ipr - frozen.target_ipr)
+                / frozen.target_ipr
+            ),
+            "heldout_median_ipr": float(heldout_row.heldout_median_ipr),
+            "heldout_relative_error": float(
+                abs(heldout_row.heldout_median_ipr - frozen.target_ipr)
+                / frozen.target_ipr
+            ),
+        })
+    selections = pd.DataFrame(rows)
+    pair = selections.pivot_table(
+        index=["memory_seed", "rho", "level"],
+        columns="method", values="heldout_median_ipr",
+    ).reset_index()
+    pair["heldout_pair_relative_error"] = (
+        (pair.softmax - pair.sparsemax).abs()
+        / ((pair.softmax + pair.sparsemax) / 2.0)
+    )
+    selections = selections.merge(
+        pair[["memory_seed", "rho", "level", "heldout_pair_relative_error"]],
+        on=["memory_seed", "rho", "level"], how="left",
+    )
+    selections["row_training_match"] = (
+        selections.training_relative_error <= config.ipr_match_relative_tolerance
+    )
+    pair_status = (
+        selections.groupby(["memory_seed", "rho", "level"])
+        .agg(
+            both_training_matches=("row_training_match", "all"),
+            heldout_pair_relative_error=("heldout_pair_relative_error", "first"),
+        )
+        .reset_index()
+    )
+    pair_status["matched"] = (
+        pair_status.both_training_matches
+        & (
+            pair_status.heldout_pair_relative_error
+            <= config.ipr_match_relative_tolerance
+        )
+    )
+    selections = selections.drop(columns=["heldout_pair_relative_error"]).merge(
+        pair_status,
+        on=["memory_seed", "rho", "level"],
+        how="left",
+    )
+    return selections
+
+
 def iterate_single(
     state: torch.Tensor,
     X: torch.Tensor,
@@ -871,6 +1006,181 @@ def run_matched_rank_preflight(
     if not all_frames:
         return pd.DataFrame(), spectra, pd.DataFrame(timing_rows)
     return pd.concat(all_frames, ignore_index=True), spectra, pd.DataFrame(timing_rows)
+
+
+def _state_rank_metrics(matrix: torch.Tensor) -> dict[str, float]:
+    singular_square = torch.linalg.svdvals(matrix).square().sort().values
+    metrics = spectrum_metrics(singular_square.unsqueeze(0), 1e-10)
+    return {
+        "effective_rank": float(metrics["effective_rank"][0]),
+        "stable_rank": float(metrics["stable_rank"][0]),
+        "numeric_rank": int(metrics["numeric_rank"][0]),
+        "trace": float(metrics["trace"][0]),
+    }
+
+
+def representation_rank_trajectory(
+    cues: torch.Tensor,
+    X: torch.Tensor,
+    alpha: float,
+    method: str,
+    config: RankCollapseConfig,
+) -> pd.DataFrame:
+    """分别记录目标内去噪秩与目标间中心秩。"""
+    expected = config.K * config.formal_representation_masks
+    if len(cues) != expected:
+        raise ValueError(f"expected {expected} representation cues, got {len(cues)}")
+    states = cues.clone()
+    rows = []
+    with torch.no_grad():
+        for step in range(config.jacobian_steps + 1):
+            blocks = states.reshape(
+                config.K, config.formal_representation_masks, config.N
+            )
+            centers = blocks.mean(dim=1)
+            centered_blocks = blocks - centers[:, None, :]
+            within_eigenvalues = torch.linalg.svdvals(
+                centered_blocks
+            ).square().sort(dim=-1).values
+            within_metrics = spectrum_metrics(within_eigenvalues, 1e-10)
+            for target in range(config.K):
+                rows.append({
+                    "time": step,
+                    "scope": "within_target",
+                    "target": target,
+                    "effective_rank": float(
+                        within_metrics["effective_rank"][target]
+                    ),
+                    "stable_rank": float(within_metrics["stable_rank"][target]),
+                    "numeric_rank": int(within_metrics["numeric_rank"][target]),
+                    "trace": float(within_metrics["trace"][target]),
+                })
+            between = centers - centers.mean(dim=0, keepdim=True)
+            rows.append({
+                "time": step,
+                "scope": "between_target",
+                "target": -1,
+                **_state_rank_metrics(between),
+            })
+            if step < config.jacobian_steps:
+                states, _, _ = hopfield_step(states, X, alpha, method)
+    return pd.DataFrame(rows)
+
+
+def run_formal_seed(
+    memory_seed: int,
+    frozen_levels: pd.DataFrame,
+    config: RankCollapseConfig,
+) -> tuple[
+    pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame,
+    dict[str, np.ndarray], pd.DataFrame, pd.DataFrame, pd.DataFrame,
+]:
+    """一个独立 memory seed 的校准、留出评估和正式 05A 轨迹。"""
+    X = make_memories(config, memory_seed)
+    Q, C = memory_span_basis(X)
+    all_cues, all_metadata = make_cues_for_targets(
+        X, config, memory_seed, np.arange(config.K), mask_count=1
+    )
+    checks = run_numerical_self_checks(X, Q, C, all_cues[0], config)
+    checks.insert(0, "memory_seed", memory_seed)
+    calibration = calibration_scan(
+        X, all_cues, all_metadata, Q, C, config
+    )
+    heldout_targets = select_formal_targets(config, memory_seed)
+    selections = select_formal_alphas(
+        calibration, frozen_levels, heldout_targets, config, memory_seed
+    )
+    is_heldout = all_metadata.target.isin(set(map(int, heldout_targets)))
+    jacobian_cues = all_cues[
+        torch.as_tensor(is_heldout.to_numpy(copy=True))
+    ]
+    jacobian_metadata = all_metadata[is_heldout].reset_index(drop=True)
+
+    all_representation_cues, representation_metadata = make_cues_for_targets(
+        X, config, memory_seed, np.arange(config.K),
+        mask_count=config.formal_representation_masks,
+    )
+    representation_cues = {}
+    for rho in config.corruption_rates:
+        mask = np.asarray(
+            np.isclose(representation_metadata.rho, rho), dtype=bool
+        ).copy()
+        representation_cues[rho] = all_representation_cues[torch.as_tensor(mask)]
+
+    rank_frames = []
+    endpoint_frames = []
+    representation_frames = []
+    spectra = {}
+    timings = []
+    for condition in selections.itertuples():
+        if not condition.matched:
+            continue
+        mask = np.isclose(jacobian_metadata.rho, condition.rho)
+        cues = jacobian_cues[torch.as_tensor(mask)]
+        metadata = jacobian_metadata[mask].reset_index(drop=True)
+        started = time.perf_counter()
+        frame, arrays = rank_trajectory(
+            cues, Q, C, condition.alpha, condition.method, config
+        )
+        elapsed = time.perf_counter() - started
+        frame = frame.merge(
+            metadata.reset_index(names="batch_index"), on="batch_index", how="left"
+        )
+        for key, value in {
+            "level": condition.level,
+            "target_ipr": condition.target_ipr,
+            "heldout_median_ipr": condition.heldout_median_ipr,
+            "heldout_pair_relative_error": condition.heldout_pair_relative_error,
+        }.items():
+            frame[key] = value
+        rank_frames.append(frame)
+
+        endpoints = classify_endpoints(
+            cues, metadata, Q, C, condition.alpha, condition.method, config
+        )
+        endpoints["level"] = condition.level
+        endpoints["target_ipr"] = condition.target_ipr
+        endpoint_frames.append(endpoints)
+
+        representation = representation_rank_trajectory(
+            representation_cues[condition.rho], X, condition.alpha,
+            condition.method, config,
+        )
+        representation["memory_seed"] = memory_seed
+        representation["rho"] = condition.rho
+        representation["level"] = condition.level
+        representation["method"] = condition.method
+        representation["alpha"] = condition.alpha
+        representation_frames.append(representation)
+
+        prefix = (
+            f"seed{memory_seed}_rho{condition.rho:.2f}_"
+            f"{condition.level}_{condition.method}"
+        )
+        spectra[f"{prefix}_local"] = arrays["local_eigenvalues"].astype(np.float32)
+        spectra[f"{prefix}_cumulative"] = arrays[
+            "cumulative_eigenvalues"
+        ].astype(np.float32)
+        timings.append({
+            "memory_seed": memory_seed,
+            "rho": condition.rho,
+            "level": condition.level,
+            "method": condition.method,
+            "alpha": condition.alpha,
+            "cue_count": len(cues),
+            "seconds": elapsed,
+        })
+    return (
+        calibration,
+        selections,
+        pd.concat(rank_frames, ignore_index=True) if rank_frames else pd.DataFrame(),
+        pd.concat(endpoint_frames, ignore_index=True) if endpoint_frames else pd.DataFrame(),
+        spectra,
+        pd.DataFrame(timings),
+        pd.concat(representation_frames, ignore_index=True)
+        if representation_frames else pd.DataFrame(),
+        checks,
+    )
 
 
 def plot_development_preflight(
@@ -1265,6 +1575,429 @@ def run_development_preflight(
         rank_results,
         spectra,
         timings,
+        total_seconds,
+    )
+
+
+def bootstrap_seed_difference(
+    seed_differences: np.ndarray,
+    config: RankCollapseConfig,
+) -> tuple[np.ndarray, float, float]:
+    generator = np.random.default_rng(config.bootstrap_seed)
+    indices = generator.integers(
+        0, len(seed_differences),
+        size=(config.bootstrap_samples, len(seed_differences)),
+    )
+    samples = seed_differences[indices].mean(axis=1)
+    lower, upper = np.quantile(samples, [0.025, 0.975])
+    return samples, float(lower), float(upper)
+
+
+def summarize_formal_05A(
+    rank_results: pd.DataFrame,
+    selections: pd.DataFrame,
+    self_checks: pd.DataFrame,
+    config: RankCollapseConfig,
+) -> tuple[dict, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """以 memory seed 为独立单位应用冻结的 05A 停止门。"""
+    trajectories = rank_results[rank_results.time == 1].copy()
+    condition_summary = (
+        trajectories.groupby(["memory_seed", "rho", "level", "method"])
+        .dimension_auc.mean().rename("mean_dimension_auc").reset_index()
+    )
+    seed_summary = (
+        trajectories.groupby(["memory_seed", "method"])
+        .dimension_auc.mean().rename("mean_dimension_auc").reset_index()
+    )
+    paired = seed_summary.pivot(
+        index="memory_seed", columns="method", values="mean_dimension_auc"
+    ).reset_index()
+    if {"softmax", "sparsemax"}.issubset(paired.columns):
+        paired["sparsemax_minus_softmax"] = paired.sparsemax - paired.softmax
+    else:
+        paired["sparsemax_minus_softmax"] = np.nan
+
+    expected_conditions = (
+        len(config.memory_seeds)
+        * len(config.corruption_rates)
+        * config.matched_ipr_levels
+        * 2
+    )
+    expected_trajectories = expected_conditions * config.formal_jacobian_targets
+    expected_rows = expected_trajectories * (config.jacobian_steps + 1)
+    matched_expected_rows = int(
+        selections.matched.sum()
+        * config.formal_jacobian_targets
+        * (config.jacobian_steps + 1)
+    )
+    critical_columns = [
+        "dimension_survival", "dimension_auc", "trace_G", "spectral_G",
+        "cumulative_effective_rank", "local_effective_rank",
+    ]
+    after_entry = rank_results[rank_results.time >= 1]
+    unexpected_nonfinite = int(
+        (~np.isfinite(after_entry[critical_columns].to_numpy(dtype=float))).sum()
+    )
+    all_matched = bool(
+        len(selections) == expected_conditions and selections.matched.all()
+    )
+    checks_passed = bool(
+        len(self_checks) == len(config.memory_seeds) * 7
+        and self_checks.passed.all()
+    )
+    complete = bool(
+        len(rank_results) == expected_rows
+        and len(trajectories) == expected_trajectories
+        and unexpected_nonfinite == 0
+        and len(paired) == len(config.memory_seeds)
+        and paired.sparsemax_minus_softmax.notna().all()
+    )
+    matched_records_complete = bool(
+        len(rank_results) == matched_expected_rows and unexpected_nonfinite == 0
+    )
+    pair_matches = (
+        selections.groupby(["memory_seed", "rho", "level"])
+        .matched.all().rename("matched").reset_index()
+    )
+    match_by_condition = (
+        pair_matches.groupby(["rho", "level"])
+        .matched.agg(matched_seeds="sum", total_seeds="size").reset_index()
+    )
+
+    bootstrap_frame = pd.DataFrame(columns=["sample", "mean_difference"])
+    mean_difference = ci_lower = ci_upper = None
+    practical = ci_excludes_zero = passed = False
+    if all_matched and checks_passed and complete:
+        differences = paired.sparsemax_minus_softmax.to_numpy(dtype=float)
+        samples, ci_lower, ci_upper = bootstrap_seed_difference(differences, config)
+        mean_difference = float(differences.mean())
+        bootstrap_frame = pd.DataFrame({
+            "sample": np.arange(config.bootstrap_samples),
+            "mean_difference": samples,
+        })
+        practical = abs(mean_difference) >= config.dimension_auc_practical_threshold
+        ci_excludes_zero = bool(ci_lower > 0 or ci_upper < 0)
+        passed = bool(practical and ci_excludes_zero)
+        outcome = "pass" if passed else "stop_curves_do_not_meet_05A_gate"
+    elif not all_matched:
+        outcome = "not_testable_ipr_unmatched"
+    elif not checks_passed:
+        outcome = "not_testable_self_check_failure"
+    else:
+        outcome = "not_testable_incomplete_or_nonfinite"
+
+    summary = {
+        "status": "formal_05A",
+        "all_ipr_conditions_matched": all_matched,
+        "all_seed_self_checks_passed": checks_passed,
+        "complete_rank_records": complete,
+        "expected_rank_rows": int(expected_rows),
+        "expected_rows_for_matched_subset": matched_expected_rows,
+        "actual_rank_rows": int(len(rank_results)),
+        "matched_subset_records_complete": matched_records_complete,
+        "unexpected_nonfinite_after_entry": unexpected_nonfinite,
+        "unmatched_condition_pairs": int((~pair_matches.matched).sum()),
+        "total_condition_pairs": int(len(pair_matches)),
+        "ipr_matching_by_rho_level": _jsonable_records(match_by_condition),
+        "mean_paired_dimension_auc_difference_sparsemax_minus_softmax": mean_difference,
+        "bootstrap_95_ci": [ci_lower, ci_upper],
+        "absolute_difference_threshold": config.dimension_auc_practical_threshold,
+        "practical_threshold_met": practical,
+        "ci_excludes_zero": ci_excludes_zero,
+        "formal_05A_passed": passed,
+        "stopping_outcome": outcome,
+    }
+    return summary, condition_summary, paired, bootstrap_frame
+
+
+def plot_formal_05A(
+    rank_results: pd.DataFrame,
+    spectra: dict[str, np.ndarray],
+    representation: pd.DataFrame,
+    paired: pd.DataFrame,
+    summary: dict,
+):
+    colors = {"softmax": "#2563EB", "sparsemax": "#E11D48"}
+    plt.rcParams.update({
+        "figure.dpi": 140,
+        "axes.spines.top": False,
+        "axes.spines.right": False,
+        "axes.titleweight": "bold",
+        "font.size": 9.2,
+    })
+    fig, axes = plt.subplots(2, 3, figsize=(15, 8.5), constrained_layout=True)
+    ax_survival, ax_paired, ax_soft, ax_sparse, ax_within, ax_between = axes.ravel()
+
+    seed_curves = (
+        rank_results.groupby(["memory_seed", "method", "time"])
+        .dimension_survival.median().reset_index()
+    )
+    for method in ("softmax", "sparsemax"):
+        curve = seed_curves[seed_curves.method == method]
+        aggregate = curve.groupby("time").dimension_survival.agg(
+            median="median",
+            lower=lambda values: values.quantile(0.025),
+            upper=lambda values: values.quantile(0.975),
+        )
+        ax_survival.plot(
+            aggregate.index, aggregate["median"], color=colors[method],
+            lw=2.3, label=method,
+        )
+        ax_survival.fill_between(
+            aggregate.index, aggregate.lower, aggregate.upper,
+            color=colors[method], alpha=0.16,
+        )
+    ax_survival.set(
+        title="A  Exploratory curves on matched subset",
+        xlabel="iteration", ylabel=r"$d_t$ (relative to t=1)",
+    )
+    ax_survival.legend(frameon=False)
+
+    for row in paired.itertuples():
+        ax_paired.plot(
+            [0, 1], [row.softmax, row.sparsemax], color="#94A3B8", lw=1.2
+        )
+    ax_paired.scatter(
+        np.zeros(len(paired)), paired.softmax, color=colors["softmax"], zorder=3
+    )
+    ax_paired.scatter(
+        np.ones(len(paired)), paired.sparsemax,
+        color=colors["sparsemax"], zorder=3,
+    )
+    ax_paired.set_xticks([0, 1], ["softmax", "sparsemax"])
+    ax_paired.set(
+        title="B  Exploratory AUC on matched subset", ylabel="mean dimension_auc"
+    )
+
+    for method, axis, label in (
+        ("softmax", ax_soft, "C"), ("sparsemax", ax_sparse, "D")
+    ):
+        arrays = [
+            values for key, values in spectra.items()
+            if key.endswith(f"middle_{method}_cumulative")
+        ]
+        combined = np.concatenate(arrays, axis=0)
+        heat = np.log10(
+            np.median(np.clip(combined, 0, None), axis=0)[:, ::-1] + 1e-30
+        ).T
+        image = axis.imshow(
+            heat, origin="upper", aspect="auto", cmap="magma",
+            extent=[0, heat.shape[1] - 1, heat.shape[0], 1],
+        )
+        axis.set(
+            title=f"{label}  {method} cumulative spectrum",
+            xlabel="iteration", ylabel="eigenvalue order",
+        )
+        fig.colorbar(image, ax=axis, label=r"$\log_{10}\lambda(G_t)$")
+
+    middle = representation[representation.level == "middle"]
+    within = middle[middle.scope == "within_target"]
+    between = middle[middle.scope == "between_target"]
+    for method in ("softmax", "sparsemax"):
+        within_curve = (
+            within[within.method == method].groupby("time")
+            .effective_rank.median()
+        )
+        between_curve = (
+            between[between.method == method].groupby("time")
+            .effective_rank.median()
+        )
+        ax_within.plot(
+            within_curve.index, within_curve, color=colors[method],
+            lw=2.2, label=method,
+        )
+        ax_between.plot(
+            between_curve.index, between_curve, color=colors[method],
+            lw=2.2, label=method,
+        )
+    ax_within.set(
+        title="E  Within-target representation rank",
+        xlabel="iteration", ylabel="median effective rank",
+    )
+    ax_between.set(
+        title="F  Between-target representation rank",
+        xlabel="iteration", ylabel="median effective rank",
+    )
+    ax_within.legend(frameon=False)
+    ax_between.legend(frameon=False)
+    fig.suptitle(
+        f"Experiment 05A — {summary['stopping_outcome']}",
+        fontsize=14, fontweight="bold",
+    )
+    if not summary["confirmatory_claim_allowed"]:
+        fig.text(
+            0.5, 0.005,
+            "IPR gate failed: plotted matched subsets are descriptive only",
+            ha="center", color="#B91C1C", fontweight="bold",
+        )
+    return fig
+
+
+def write_formal_05A_artifacts(
+    directory: str | Path,
+    config: RankCollapseConfig,
+    frozen_levels: pd.DataFrame,
+    calibration: pd.DataFrame,
+    selections: pd.DataFrame,
+    rank_results: pd.DataFrame,
+    endpoints: pd.DataFrame,
+    spectra: dict[str, np.ndarray],
+    timings: pd.DataFrame,
+    representation: pd.DataFrame,
+    self_checks: pd.DataFrame,
+    total_seconds: float,
+) -> dict:
+    import hashlib
+
+    directory = Path(directory)
+    directory.mkdir(parents=True, exist_ok=True)
+    summary, condition_summary, paired, bootstrap = summarize_formal_05A(
+        rank_results, selections, self_checks, config
+    )
+    protocol_path = Path(__file__).with_name(
+        "experiment_05_multimemory_rank_collapse_protocol.md"
+    )
+    summary.update({
+        "confirmatory_claim_allowed": bool(
+            summary["all_ipr_conditions_matched"]
+            and summary["all_seed_self_checks_passed"]
+            and summary["complete_rank_records"]
+        ),
+        "protocol_sha256": hashlib.sha256(protocol_path.read_bytes()).hexdigest(),
+        "source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "runtime_seconds": total_seconds,
+        "execution_environment": (
+            "google_colab" if Path("/content").exists() else "local_cpu"
+        ),
+        "device": "cpu",
+        "torch_version": torch.__version__,
+        "endpoint_category_counts": _jsonable_records(
+            endpoints.groupby(["method", "category"]).size()
+            .rename("count").reset_index()
+        ),
+        "first_step_saturation": {
+            "collapsed_at_entry_trajectories": int(
+                rank_results[rank_results.time == 1]
+                .collapsed_at_entry.sum()
+            ),
+            "sensitivity_extinct_at_final_trajectories": int(
+                rank_results[rank_results.time == config.jacobian_steps]
+                .sensitivity_extinct.sum()
+            ),
+        },
+    })
+    calibration.to_csv(
+        directory / "calibration.csv.gz", index=False,
+        compression={"method": "gzip", "compresslevel": 6, "mtime": 0},
+    )
+    selections.to_csv(directory / "selected_alphas.csv", index=False)
+    selections[~selections.matched].to_csv(
+        directory / "unmatched_conditions.csv", index=False
+    )
+    pd.DataFrame(summary["ipr_matching_by_rho_level"]).to_csv(
+        directory / "ipr_matching_by_rho_level.csv", index=False
+    )
+    rank_results.to_csv(
+        directory / "jacobian_results.csv.gz", index=False,
+        compression={"method": "gzip", "compresslevel": 6, "mtime": 0},
+    )
+    endpoints.to_csv(directory / "endpoint_categories.csv", index=False)
+    np.savez_compressed(directory / "jacobian_spectra.npz", **spectra)
+    timings.to_csv(directory / "jacobian_timing.csv", index=False)
+    representation.to_csv(
+        directory / "representation_rank.csv.gz", index=False,
+        compression={"method": "gzip", "compresslevel": 6, "mtime": 0},
+    )
+    self_checks.to_csv(directory / "self_checks.csv", index=False)
+    condition_summary.to_csv(directory / "condition_dimension_auc.csv", index=False)
+    paired.to_csv(directory / "seed_dimension_auc.csv", index=False)
+    bootstrap.to_csv(directory / "bootstrap_dimension_auc.csv.gz", index=False,
+        compression={"method": "gzip", "compresslevel": 6, "mtime": 0})
+    frozen_levels.to_csv(directory / "frozen_development_ipr_levels.csv", index=False)
+    (directory / "formal_summary.json").write_text(
+        json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
+    if summary["stopping_outcome"] == "not_testable_ipr_unmatched":
+        conclusion = (
+            "# 实验 05A 判定\n\n"
+            "本次正式运行未能检验 softmax 与 sparsemax 的秩坍缩差异。"
+            f"{summary['unmatched_condition_pairs']}/"
+            f"{summary['total_condition_pairs']} 个 `seed × rho × IPR level` "
+            "条件对未通过冻结的 5% IPR 匹配门，因此不计算确认性配对差或"
+            "置信区间。\n\n"
+            "数值自检与已匹配子集的数据完整性均通过；匹配子集图只作描述，"
+            "不能据此接受或拒绝 05A。按预注册规则，不扩展 alpha 网格、不"
+            "放宽阈值，也不进入 05B。\n"
+        )
+    elif summary["formal_05A_passed"]:
+        conclusion = (
+            "# 实验 05A 判定\n\n05A 通过冻结的实用差异与置信区间门。"
+            "下一步只允许在类别覆盖足够时运行条件性的 05B。\n"
+        )
+    else:
+        conclusion = (
+            "# 实验 05A 判定\n\nIPR 匹配与数值门通过，但秩坍缩差异没有"
+            "同时达到 0.10 实用门槛和置信区间门。停止变体坍缩几何路线，"
+            "不进入 05B。\n"
+        )
+    (directory / "conclusion.md").write_text(conclusion, encoding="utf-8")
+    (directory / "protocol.json").write_text(
+        json.dumps({
+            "config": asdict(config),
+            "protocol_sha256": summary["protocol_sha256"],
+            "frozen_development_ipr_levels": _jsonable_records(frozen_levels),
+            "development_only": False,
+        }, indent=2, ensure_ascii=False), encoding="utf-8",
+    )
+    figure = plot_formal_05A(
+        rank_results, spectra, representation, paired, summary
+    )
+    figure.savefig(directory / "main_figure.png", dpi=220, bbox_inches="tight")
+    figure.savefig(directory / "main_figure.pdf", bbox_inches="tight")
+    return summary
+
+
+def run_formal_05A(
+    config: RankCollapseConfig,
+    frozen_levels: pd.DataFrame,
+    output_directory: str | Path,
+) -> dict:
+    """执行冻结的 8-seed 05A；不自动进入条件性的 05B。"""
+    config.validate()
+    started = time.perf_counter()
+    calibrations = []
+    selections = []
+    ranks = []
+    endpoints = []
+    all_spectra = {}
+    timings = []
+    representations = []
+    checks = []
+    for memory_seed in config.memory_seeds:
+        print(f"formal 05A memory seed {memory_seed + 1}/{len(config.memory_seeds)}")
+        result = run_formal_seed(memory_seed, frozen_levels, config)
+        calibration, selected, rank, endpoint, spectra, timing, representation, check = result
+        calibrations.append(calibration)
+        selections.append(selected)
+        ranks.append(rank)
+        endpoints.append(endpoint)
+        all_spectra.update(spectra)
+        timings.append(timing)
+        representations.append(representation)
+        checks.append(check)
+    total_seconds = time.perf_counter() - started
+    return write_formal_05A_artifacts(
+        output_directory,
+        config,
+        frozen_levels,
+        pd.concat(calibrations, ignore_index=True),
+        pd.concat(selections, ignore_index=True),
+        pd.concat(ranks, ignore_index=True),
+        pd.concat(endpoints, ignore_index=True),
+        all_spectra,
+        pd.concat(timings, ignore_index=True),
+        pd.concat(representations, ignore_index=True),
+        pd.concat(checks, ignore_index=True),
         total_seconds,
     )
 

@@ -1,0 +1,127 @@
+{
+  "status": "formal_05A",
+  "all_ipr_conditions_matched": false,
+  "all_seed_self_checks_passed": true,
+  "complete_rank_records": false,
+  "expected_rank_rows": 59904,
+  "expected_rows_for_matched_subset": 49920,
+  "actual_rank_rows": 49920,
+  "matched_subset_records_complete": true,
+  "unexpected_nonfinite_after_entry": 0,
+  "unmatched_condition_pairs": 12,
+  "total_condition_pairs": 72,
+  "ipr_matching_by_rho_level": [
+    {
+      "rho": 0.1,
+      "level": "high",
+      "matched_seeds": 8,
+      "total_seeds": 8
+    },
+    {
+      "rho": 0.1,
+      "level": "low",
+      "matched_seeds": 8,
+      "total_seeds": 8
+    },
+    {
+      "rho": 0.1,
+      "level": "middle",
+      "matched_seeds": 8,
+      "total_seeds": 8
+    },
+    {
+      "rho": 0.25,
+      "level": "high",
+      "matched_seeds": 8,
+      "total_seeds": 8
+    },
+    {
+      "rho": 0.25,
+      "level": "low",
+      "matched_seeds": 8,
+      "total_seeds": 8
+    },
+    {
+      "rho": 0.25,
+      "level": "middle",
+      "matched_seeds": 4,
+      "total_seeds": 8
+    },
+    {
+      "rho": 0.4,
+      "level": "high",
+      "matched_seeds": 8,
+      "total_seeds": 8
+    },
+    {
+      "rho": 0.4,
+      "level": "low",
+      "matched_seeds": 4,
+      "total_seeds": 8
+    },
+    {
+      "rho": 0.4,
+      "level": "middle",
+      "matched_seeds": 4,
+      "total_seeds": 8
+    }
+  ],
+  "mean_paired_dimension_auc_difference_sparsemax_minus_softmax": null,
+  "bootstrap_95_ci": [
+    null,
+    null
+  ],
+  "absolute_difference_threshold": 0.1,
+  "practical_threshold_met": false,
+  "ci_excludes_zero": false,
+  "formal_05A_passed": false,
+  "stopping_outcome": "not_testable_ipr_unmatched",
+  "confirmatory_claim_allowed": false,
+  "protocol_sha256": "cad90cbff17b69d231ba165822317350c5cd7b6daf6c1bfb7639484a968aecba",
+  "source_sha256": "6e0fb9b3728600dbb1bf2812acde3df8fcc1f15b31cc6055cee2cb39557402ce",
+  "runtime_seconds": 146.7051265409973,
+  "execution_environment": "local_cpu",
+  "device": "cpu",
+  "torch_version": "2.14.0",
+  "endpoint_category_counts": [
+    {
+      "method": "softmax",
+      "category": "correct_memory_like",
+      "count": 580
+    },
+    {
+      "method": "softmax",
+      "category": "other_stored_memory_like",
+      "count": 154
+    },
+    {
+      "method": "softmax",
+      "category": "stable_mixture",
+      "count": 1186
+    },
+    {
+      "method": "sparsemax",
+      "category": "correct_memory_like",
+      "count": 556
+    },
+    {
+      "method": "sparsemax",
+      "category": "other_stored_memory_like",
+      "count": 84
+    },
+    {
+      "method": "sparsemax",
+      "category": "stable_mixture",
+      "count": 783
+    },
+    {
+      "method": "sparsemax",
+      "category": "unconverged_or_unstable",
+      "count": 497
+    }
+  ],
+  "first_step_saturation": {
+    "collapsed_at_entry_trajectories": 503,
+    "sensitivity_extinct_at_final_trajectories": 3164
+  }
+}
