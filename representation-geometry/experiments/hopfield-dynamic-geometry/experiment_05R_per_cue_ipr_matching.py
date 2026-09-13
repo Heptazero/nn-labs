@@ -754,7 +754,24 @@ def write_artifacts(
     rank_results.to_csv(
         directory / "jacobian_results.csv.gz", index=False, compression=gzip_options
     )
-    np.savez_compressed(directory / "jacobian_spectra.npz", **spectra)
+    # One archive per independent seed keeps the full spectra reviewable without
+    # creating a single large compressed object that is awkward to fetch.
+    legacy_spectra = directory / "jacobian_spectra.npz"
+    if legacy_spectra.exists():
+        legacy_spectra.unlink()
+    spectra_directory = directory / "jacobian_spectra"
+    spectra_directory.mkdir(exist_ok=True)
+    for stale in spectra_directory.glob("seed*.npz"):
+        stale.unlink()
+    for seed in config.memory_seeds:
+        prefix = f"seed{seed}_"
+        seed_spectra = {
+            key: value for key, value in spectra.items() if key.startswith(prefix)
+        }
+        if seed_spectra:
+            np.savez_compressed(
+                spectra_directory / f"seed{seed}.npz", **seed_spectra
+            )
     self_checks.to_csv(directory / "self_checks.csv", index=False)
     timings.to_csv(directory / "jacobian_timing.csv", index=False)
     seed_level.to_csv(directory / "seed_level_auc.csv", index=False)

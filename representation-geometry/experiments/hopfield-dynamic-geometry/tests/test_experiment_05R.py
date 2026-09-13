@@ -162,12 +162,16 @@ class PerCueMatchingTests(unittest.TestCase):
             summary = run_pilot(self.config, temporary)
             required = {
                 "solver_results.csv.gz", "pair_status.csv",
-                "jacobian_results.csv.gz", "jacobian_spectra.npz",
+                "jacobian_results.csv.gz", "jacobian_spectra",
                 "self_checks.csv", "seed_level_auc.csv",
                 "seed_interaction.csv", "pilot_summary.json",
                 "protocol.json", "conclusion.md", "main_figure.png",
             }
             self.assertTrue(required.issubset({path.name for path in Path(temporary).iterdir()}))
+            self.assertEqual(
+                len(list((Path(temporary) / "jacobian_spectra").glob("seed*.npz"))),
+                len(self.config.memory_seeds),
+            )
             self.assertEqual(summary["expected_pair_count"], 24)
             self.assertEqual(summary["self_check_count"], 14)
             self.assertTrue(summary["all_seed_self_checks_passed"])
