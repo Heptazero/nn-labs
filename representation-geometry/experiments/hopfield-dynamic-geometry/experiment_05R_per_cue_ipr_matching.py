@@ -700,7 +700,8 @@ def plot_pilot(
             ax_mechanism.annotate(row.level, (row.support, row.entropy), fontsize=7)
     ax_mechanism.set(
         title="F  Descriptive support–entropy state",
-        xlabel="mean support at t=1", ylabel="mean attention entropy at t=1",
+        xlabel="mean support producing first update",
+        ylabel="mean attention entropy producing first update",
     )
     ax_mechanism.legend(frameon=False)
     fig.suptitle(
