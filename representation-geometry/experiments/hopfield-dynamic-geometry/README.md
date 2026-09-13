@@ -27,6 +27,12 @@ pullback-metric analysis to Hopfield retrieval dynamics.
   `artifacts/experiment_05/formal/`: 12 of 72 seed-by-condition pairs failed the
   preregistered 5% held-out IPR match, so 05A is recorded as not testable and
   05B was not run.
+- `experiment_05R_per_cue_ipr_matching.py`: exploratory method pilot prompted by
+  a post-05A interaction pattern. It independently solves softmax and sparsemax
+  sharpness for every old-seed cue at IPR 4, 16, and 64, applies symmetric
+  censoring, and asks whether the middle-regime dimension-AUC difference exceeds
+  the two endpoints. The old seeds can only open or stop a new-seed experiment
+  06; they cannot revise experiment 05A.
 
 These notebooks are method checks, not reproductions of the RNN dynamic-warping
 paper and not evidence of a new Hopfield result. Experiment 1 uses its own JAX
