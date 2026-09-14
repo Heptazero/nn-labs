@@ -13,9 +13,18 @@
 第一实验只用离散经典 Hopfield。tanh、softmax、sparsemax 的模型比较另立
 实验；不能在看过实验 01 后把它们补进同一确认性问题。
 
-## 1. 代码基础与模型
+## 1. Notebook 结构、代码基础与模型
 
-使用仓库已有组件：
+实验 01 只交付一个自包含的 Colab：
+
+`experiment_01_dynamic_point_cloud_topology_colab.ipynb`
+
+模型、采样、异步动力学、终点分类、H0/H1、统计、自检、绘图与产物导出均写在
+该 notebook 内。不得要求用户下载本地环境，也不得在运行时下载或导入本实验的
+`.py` 核心。Notebook 用编号 Markdown 标题形成 Colab 目录，并把实现细节放在
+可折叠代码单元格中；用户主要操作配置、development、formal 和结果解读单元格。
+
+以下仓库组件作为公式和行为的参考来源，不作为 notebook 运行时依赖：
 
 - 随机二值记忆：`am_bench/tasks.py:32-57`；
 - 精确 Hamming 翻转 cue：`am_bench/tasks.py:60-83`；
@@ -165,8 +174,8 @@ pair baseline 平均高至少 0.03、以 memory seed 为单位的配对 bootstra
 
 ## 9. 数值与数据自检
 
-Notebook 正式运行前，核心公式与数据契约的快速测试必须全部通过；随后在
-Colab development preflight 中复核相同自检并生成数值产物：
+Notebook 的“快速自检”章节必须在 development/formal runner 之前。核心公式与
+数据契约的自检全部通过后，才允许继续生成 development 数值产物：
 
 1. 记忆和 cue 只含 `{-1,+1}`，翻转数精确等于 `round(rho*N)`；
 2. `W` 对称、对角为零，并与共享 ClassicalHopfield 一致；
@@ -181,8 +190,9 @@ Colab development preflight 中复核相同自检并生成数值产物：
 11. 原始输入、终点、未收敛轨迹和零长度条均未静默删除；
 12. 依赖、源码提交、文件哈希、运行时间和随机种子完整保存。
 
-任一项失败，不运行 10-seed 正式预算。本地测试只证明代码准备就绪，不能作为
-拓扑现象或运行时间的证据；development 和 formal 数值证据都必须来自 Colab。
+任一项失败，不运行 10-seed 正式预算。Notebook 文件的静态检查只证明其结构
+可解析，不能作为拓扑现象或运行时间的证据；development 和 formal 数值证据
+都必须来自 Colab。
 
 ## 10. 产物与图
 
@@ -211,9 +221,10 @@ pair AUC 与基线；伪坑 family 的 purity/coverage 时间；普通恢复率�
 
 ## 11. 停止顺序
 
-1. 实现共享输入、异步轨迹、终点 quotient 和 H0/MST，不做 H1。
-2. 用 `tests/test_experiment_01.py` 做快速公式与数据契约检查；这不是实验运行。
-3. 生成固定源码提交和 SHA-256 的 Colab，在 Colab 只跑一个 development seed，
+1. 在自包含 notebook 内实现输入、异步轨迹、终点 quotient 和 H0/MST，暂不做
+   H1；用标题目录和代码折叠隔开实现与用户操作区。
+2. 在 notebook 内运行快速公式与数据契约自检；这不是实验结果。
+3. 固定 notebook 源码提交和 SHA-256，在 Colab 只跑一个 development seed，
    提交自检、运行时间、唯一状态数量和伪坑覆盖。
 4. development 门通过后，在 Colab 加入 H1 与固定 PCA 图；用户审查后再运行
    正式 `10 seeds × 3 P`。
