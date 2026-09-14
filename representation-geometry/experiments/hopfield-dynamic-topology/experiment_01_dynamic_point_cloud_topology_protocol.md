@@ -165,7 +165,8 @@ pair baseline 平均高至少 0.03、以 memory seed 为单位的配对 bootstra
 
 ## 9. 数值与数据自检
 
-开发预跑必须全部通过：
+Notebook 正式运行前，核心公式与数据契约的快速测试必须全部通过；随后在
+Colab development preflight 中复核相同自检并生成数值产物：
 
 1. 记忆和 cue 只含 `{-1,+1}`，翻转数精确等于 `round(rho*N)`；
 2. `W` 对称、对角为零，并与共享 ClassicalHopfield 一致；
@@ -180,7 +181,8 @@ pair baseline 平均高至少 0.03、以 memory seed 为单位的配对 bootstra
 11. 原始输入、终点、未收敛轨迹和零长度条均未静默删除；
 12. 依赖、源码提交、文件哈希、运行时间和随机种子完整保存。
 
-任一项失败，不生成正式 Colab、不跑 10-seed 正式预算。
+任一项失败，不运行 10-seed 正式预算。本地测试只证明代码准备就绪，不能作为
+拓扑现象或运行时间的证据；development 和 formal 数值证据都必须来自 Colab。
 
 ## 10. 产物与图
 
@@ -210,11 +212,12 @@ pair AUC 与基线；伪坑 family 的 purity/coverage 时间；普通恢复率�
 ## 11. 停止顺序
 
 1. 实现共享输入、异步轨迹、终点 quotient 和 H0/MST，不做 H1。
-2. 跑一个 development seed，提交自检、运行时间、唯一状态数量和伪坑覆盖。
-3. 自检全部通过后才加入 H1、固定 PCA 图和 Colab。
-4. 再运行正式 `10 seeds × 3 P`。
+2. 用 `tests/test_experiment_01.py` 做快速公式与数据契约检查；这不是实验运行。
+3. 生成固定源码提交和 SHA-256 的 Colab，在 Colab 只跑一个 development seed，
+   提交自检、运行时间、唯一状态数量和伪坑覆盖。
+4. development 门通过后，在 Colab 加入 H1 与固定 PCA 图；用户审查后再运行
+   正式 `10 seeds × 3 P`。
 5. 若归一化 H0 不优于简单基线，停止独立拓扑预测路线；不通过改 k、epsilon、
    抽样或终点阈值救结果。
 6. 只有实验 01 通过，才另立模型比较实验，分别明确连续 tanh、现代 softmax
    和 sparsemax 的状态空间、收敛与竞争程度匹配。
-

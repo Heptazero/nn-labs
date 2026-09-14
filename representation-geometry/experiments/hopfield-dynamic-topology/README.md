@@ -9,11 +9,12 @@ topology results.
 
 - `experiment_01_dynamic_point_cloud_topology_protocol.md`: frozen question,
   controls, development gate, formal budget, outputs, and stop rules.
-- `experiment_01_dynamic_point_cloud_topology.py`: implementation to be created
-  only after the protocol is read.
-- `experiment_01_dynamic_point_cloud_topology_colab.ipynb`: Colab runner to be
-  generated after local tests and the development preflight pass.
-- `tests/test_experiment_01.py`: numerical and data-contract tests.
+- `experiment_01_dynamic_point_cloud_topology.py`: tested numerical core imported
+  by the notebook; it is not the user-facing experiment runner.
+- `experiment_01_dynamic_point_cloud_topology_colab.ipynb`: the user-facing
+  runner for both development and formal numerical execution.
+- `tests/test_experiment_01.py`: fast local/CI checks for formulas and data
+  contracts; passing them is readiness evidence, not an experiment result.
 - `artifacts/experiment_01/development/`: one-seed readiness evidence.
 - `artifacts/experiment_01/formal/`: frozen 10-seed results, created only if the
   development gate passes.
@@ -37,6 +38,6 @@ later matched-model experiment; they must not be silently added to experiment 01
 3. Read the active handoff `hopfield-dynamic-topology.md`.
 4. Inspect the cited shared source before coding; do not copy notebook-only
    implementations when a tested component already exists.
-5. Implement and run only the development preflight first. Do not relax a failed
-   gate or start the formal budget automatically.
-
+5. Implement the tested core, generate a hash-pinned Colab, and run only the
+   development preflight in Colab first. Do not treat local tests as numerical
+   evidence, relax a failed gate, or start the formal budget automatically.
